@@ -43,20 +43,20 @@ class LaravelServiceProvider extends ServiceProvider
      * @author luffyzhao@vip.126.com
      */
     protected function registerLuffyCommand(){
-        $this->app->singleton('luffyzhao.make.excels', function () {
-            return new MakeExcels;
+        $this->app->singleton('luffyzhao.make.excels', function ($app) {
+            return new MakeExcels($app['files']);
         });
 
         $this->commands('luffyzhao.make.excels');
 
-        $this->app->singleton('luffyzhao.make.searchs', function () {
-            return new MakeSearchs;
+        $this->app->singleton('luffyzhao.make.searchs', function ($app) {
+            return new MakeSearchs($app['files']);
         });
 
         $this->commands('luffyzhao.make.searchs');
 
-        $this->app->singleton('luffyzhao.make.repositories', function () {
-            return new MakeRepositories;
+        $this->app->singleton('luffyzhao.make.repositories', function ($app) {
+            return new MakeRepositories($app['files']);
         });
 
         $this->commands('luffyzhao.make.repositories');
