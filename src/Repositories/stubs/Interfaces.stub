@@ -1,0 +1,10 @@
+<?php
+
+namespace App\Repositories\Modules\DummyModel;
+
+use luffyzhao\laravelTools\Repositories\Facades\RepositoryInterface;
+
+interface Interfaces extends RepositoryInterface
+{
+    // code...
+}

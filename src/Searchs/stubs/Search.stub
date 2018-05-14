@@ -1,0 +1,11 @@
+<?php
+
+namespace DummyNamespace;
+
+use luffyzhao\laravelTools\Searchs\Facades\SearchAbstract;
+
+class DummyClass extends SearchAbstract
+{
+    protected $relationship = [
+    ];
+}
