@@ -51,7 +51,7 @@ class MakeExcels extends GeneratorCommand
      */
     protected function getStub()
     {
-        return __DIR__ .'/../Excels/stubs/Search.stub';
+        return __DIR__ .'/../Excels/stubs/Excel.stub';
     }
 
     /**
