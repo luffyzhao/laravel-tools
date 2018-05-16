@@ -23,7 +23,8 @@ mix.webpackConfig({
         // 依据该路径进行编译以及异步加载
         publicPath: '',
         // 注意开发期间不加 hash，以免自动刷新失败
-        chunkFilename: `js/admin/chunk[name].${ mix.inProduction() ? '[chunkhash].' : '' }js`
+        chunkFilename: `js/luffyzhao/chunk[name].${ mix.inProduction() ? '[chunkhash].' : '' }js`,
+        path: resolve('../../../public')
     },
     resolve: {
         extensions: ['.js', '.vue', '.json'],
@@ -39,7 +40,7 @@ mix.webpackConfig({
 })
 
 
-mix.js('js/app.js', '../../../public/js/admin')
+mix.js('js/app.js', 'public/js/luffyzhao')
     .extract([
         'axios',
         'lodash',
@@ -51,12 +52,10 @@ mix.js('js/app.js', '../../../public/js/admin')
         vue: ['Vue']
     });
 
-mix.copyDirectory('node_modules/iview/dist/styles/', '../../../public/css/admin');
+mix.copyDirectory('node_modules/iview/dist/styles/', '../../../public/css/luffyzhao');
 
-mix.copyDirectory('images/', '../../../public/images/admin');
+mix.copyDirectory('images/', '../../../public/images/luffyzhao');
 
-mix.sass('sass/app.scss', '../../../public/css/admin').options({
+mix.sass('sass/app.scss', 'public/css/luffyzhao').options({
     processCssUrls: true
 });
-
-// mix.sass('resources/assets/sass/github-markdown.scss', 'public/css/admin')

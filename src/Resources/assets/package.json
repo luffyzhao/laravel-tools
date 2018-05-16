@@ -9,7 +9,7 @@
         "prod": "npm run production",
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=webpack.config.js"
     },
-    "devDependencies": {
+    "dependencies": {
         "axios": "^0.17",
         "babel-helper-vue-jsx-merge-props": "^2.0.3",
         "babel-plugin-syntax-jsx": "^6.18.0",
@@ -22,9 +22,7 @@
         "lodash": "^4.17.4",
         "style-loader": "^0.20.3",
         "vue": "^2.5.7",
-        "webpack-cli": "^2.0.13"
-    },
-    "dependencies": {
+        "webpack-cli": "^2.0.13",
         "css-loader": "^0.28.9",
         "echarts": "^4.1.0",
         "highlight.js": "^9.12.0",
