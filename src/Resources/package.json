@@ -1,0 +1,44 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "npm run development",
+        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=webpack.config.js",
+        "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=webpack.config.js",
+        "watch-poll": "npm run watch -- --watch-poll",
+        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=webpack.config.js",
+        "prod": "npm run production",
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=webpack.config.js"
+    },
+    "devDependencies": {
+        "axios": "^0.17",
+        "babel-helper-vue-jsx-merge-props": "^2.0.3",
+        "babel-plugin-syntax-jsx": "^6.18.0",
+        "babel-plugin-transform-vue-jsx": "^3.5.1",
+        "bootstrap-sass": "^3.3.7",
+        "cross-env": "^5.1",
+        "css-loader": "^0.28.11",
+        "laravel-mix": "^1.7.2",
+        "less": "^2.7.3",
+        "lodash": "^4.17.4",
+        "style-loader": "^0.20.3",
+        "vue": "^2.5.7",
+        "webpack-cli": "^2.0.13"
+    },
+    "dependencies": {
+        "css-loader": "^0.28.9",
+        "echarts": "^4.1.0",
+        "highlight.js": "^9.12.0",
+        "is-windows": "^1.0.1",
+        "iview": "^2.9.1",
+        "js-md5": "^0.7.3",
+        "less-loader": "^4.0.5",
+        "moment": "^2.22.1",
+        "shebang-command": "^1.2.0",
+        "vue-router": "^3.0.1",
+        "vue-scroll": "^2.1.7",
+        "vuex": "^3.0.1",
+        "web-storage-cache": "^1.0.3",
+        "webpack": "^3.11.0",
+        "xlsx": "^0.12.11"
+    }
+}
