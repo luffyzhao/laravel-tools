@@ -29,7 +29,7 @@ mix.webpackConfig({
         extensions: ['.js', '.vue', '.json'],
         alias: {
             'vue$': 'vue/dist/vue.common.js',
-            '@': resolve('resources/assets/luffyzhao')
+            '@': resolve('js')
         }
     },
     plugins: [
@@ -39,7 +39,7 @@ mix.webpackConfig({
 })
 
 
-mix.js('resources/assets/luffyzhao/app.js', 'public/js/admin')
+mix.js('js/app.js', '../../../public/js/admin')
     .extract([
         'axios',
         'lodash',
@@ -51,11 +51,11 @@ mix.js('resources/assets/luffyzhao/app.js', 'public/js/admin')
         vue: ['Vue']
     });
 
-mix.copyDirectory('node_modules/iview/dist/styles/', 'public/css/admin');
+mix.copyDirectory('node_modules/iview/dist/styles/', '../../../public/css/admin');
 
-mix.copyDirectory('resources/assets/images/', 'public/images/admin');
+mix.copyDirectory('images/', '../../../public/images/admin');
 
-mix.sass('resources/assets/sass/app.scss', 'public/css/admin').options({
+mix.sass('sass/app.scss', '../../../public/css/admin').options({
     processCssUrls: true
 });
 
