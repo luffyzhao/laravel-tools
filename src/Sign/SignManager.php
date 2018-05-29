@@ -51,7 +51,7 @@ class SignManager
     public function validate(array $request): bool
     {
         $data = collect($request)->except(['_sign', '_sign_type'])->all();
-        list($sign, $signType) = $this->validateParams($request);
+        extract($this->validateParams($request));
 
         return $this->signObj($signType)->verify($data, $sign);
     }
@@ -69,16 +69,12 @@ class SignManager
      */
     protected function validateParams(array $request): array
     {
-<<<<<<< HEAD
         $data = collect($request->header())->only('_sign', '_sign_type', '_timestamp');
         if ($data->isEmpty()) {
             throw new SignException('_sign and _sign_type and _timestamp must be filled in');
         }
 
         return $data->each(function ($item, $key) {
-=======
-        return collect($request->header())->only('_sign', '_sign_type', '_timestamp')->each(function ($item, $key) {
->>>>>>> e1946f38993477a324aea0250cfe7e5cf15eda95
             if (!is_string($item) || empty($item)) {
                 throw new SignException($key.' must be filled in');
             }
