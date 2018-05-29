@@ -43,10 +43,11 @@ abstract class CoreSign
     {
         $sign = '';
         while (list($key, $val) = each($data)) {
+            $key = ('' === $pix ? $key : $pix."[{$key}]");
             if (is_object($val) || is_array($val)) {
-                $sign .= $this->createLinkstring((array) $val, $pix.$key.'.');
+                $sign .= $this->createLinkstring((array) $val, $key).'&';
             } else {
-                $sign .= $pix.$key.'='.$val.'&';
+                $sign .= $key.'='.$val.'&';
             }
         }
         //去掉最后一个&字符
