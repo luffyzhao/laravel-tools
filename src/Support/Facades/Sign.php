@@ -3,14 +3,15 @@
 namespace luffyzhao\laravelTools\Support\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use Illuminate\Http\Request;
 
 /**
  * @method static \luffyzhao\laravelTools\Sign\SignManager
- * @method static sign(array $request, $signType = 'md5') : array
- * @method static validate(array $request) : bool
- * @package luffyzhao\laravelTools\Support\Facades
+ * @method static sign(Request $request, $signType = 'md5') : array
+ * @method static validate(Request $request) : bool
  *
  * @see luffyzhao\laravelTools\Sign\SignManager
+ *
  * @author luffyzhao@vip.126.com
  */
 class Sign extends Facade

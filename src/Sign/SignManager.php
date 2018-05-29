@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use luffyzhao\laravelTools\Sign\Drivers\Md5Sign;
 use luffyzhao\laravelTools\Sign\Drivers\RsaSign;
 use luffyzhao\laravelTools\Sign\Exceptions\SignException;
+use Illuminate\Http\Request;
 
 class SignManager
 {
@@ -14,19 +15,17 @@ class SignManager
      *
      * @method sign
      *
-     * @param array  $request
-     * @param string $signType
+     * @param Request $request  [description]
+     * @param string  $signType [description]
      *
-     * @return array
-     *
-     * @throws SignException
+     * @return array [description]
      *
      * @author luffyzhao@vip.126.com
      */
-    public function sign(array $request, $signType = 'md5'): array
+    public function sign(Request $request, $signType = 'md5'): array
     {
         $timestamp = Carbon::now()->format('Y-m-d H:i:s');
-        $data = collect($request)->except(['_sign', '_sign_type'])->put('_timestamp', $timestamp)->all();
+        $data = collect($request->except(['_sign', '_sign_type']))->put('_timestamp', $timestamp)->all();
 
         return [
           '_sign' => $this->signObj($signType)->sign($data),
@@ -40,17 +39,15 @@ class SignManager
      *
      * @method validate
      *
-     * @param array $request
+     * @param Request $request [description]
      *
-     * @return bool
-     *
-     * @throws SignException
+     * @return bool [description]
      *
      * @author luffyzhao@vip.126.com
      */
-    public function validate(array $request): bool
+    public function validate(Request $request): bool
     {
-        $data = collect($request)->except(['_sign', '_sign_type'])->all();
+        $data = $request->except(['_sign', '_sign_type']);
         $header = $this->validateParams($request);
 
         return $this->signObj($header['_sign_type'])->verify($data, $header['_sign']);
@@ -61,13 +58,13 @@ class SignManager
      *
      * @method validateParams
      *
-     * @param array $request
+     * @param Request $request [description]
      *
-     * @return array
+     * @return array [description]
      *
      * @author luffyzhao@vip.126.com
      */
-    protected function validateParams(array $request): array
+    protected function validateParams(Request $request): array
     {
         $data = collect($request->header())->only('_sign', '_sign_type', '_timestamp');
         if ($data->isEmpty()) {
