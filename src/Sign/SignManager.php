@@ -98,7 +98,7 @@ class SignManager
      */
     protected function validateTimestamp($timestamp)
     {
-        return !empty($timestamp) && Carbon::parse($timestamp)->diffInRealSeconds() < 600;
+        return !empty($timestamp) && Carbon::parse($timestamp)->diffInRealSeconds() < Config::get('app.sign_time_out', 60);
     }
 
     /**
