@@ -17,10 +17,10 @@ class VerifySign
 {
     public function handle(Request $request, Closure $next, $guard = null)
     {
-        if (Sign::validate($request)) {
-            $next();
-        } else {
+        if (!Sign::validate($request)) {
             throw new SignException('sign not true');
         }
+
+        return $next($request);
     }
 }

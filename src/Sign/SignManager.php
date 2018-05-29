@@ -22,15 +22,15 @@ class SignManager
      *
      * @author luffyzhao@vip.126.com
      */
-    public function sign(Request $request, $signType = 'md5'): array
+    public function sign(Request $request, $signType = 'rsa'): array
     {
         $timestamp = Carbon::now()->format('Y-m-d H:i:s');
-        $data = collect($request->except(['_sign', '_sign_type']))->put('_timestamp', $timestamp)->all();
+        $data = collect($request->except(['sign', 'signtype']))->put('timestamp', $timestamp)->all();
 
         return [
-          '_sign' => $this->signObj($signType)->sign($data),
-          '_sign_type' => $signType,
-          '_timestamp' => $timestamp,
+          'sign' => $this->signObj($signType)->sign($data),
+          'signtype' => $signType,
+          'timestamp' => $timestamp,
         ];
     }
 
@@ -47,10 +47,11 @@ class SignManager
      */
     public function validate(Request $request): bool
     {
-        $data = $request->except(['_sign', '_sign_type']);
+        $data = $request->except(['sign', 'signtype']);
         $header = $this->validateParams($request);
+        $data['timestamp'] = $header['timestamp'];
 
-        return $this->signObj($header['_sign_type'])->verify($data, $header['_sign']);
+        return $this->signObj($header['signtype'])->verify($data, $header['sign']);
     }
 
     /**
@@ -66,16 +67,19 @@ class SignManager
      */
     protected function validateParams(Request $request): array
     {
-        $data = collect($request->header())->only('_sign', '_sign_type', '_timestamp');
+        $data = collect($request->header())->only('sign', 'signtype', 'timestamp')->map(function ($headers) {
+            return $headers[0];
+        });
+
         if ($data->isEmpty()) {
-            throw new SignException('_sign and _sign_type and _timestamp must be filled in');
+            throw new SignException('sign and signtype and timestamp must be filled in');
         }
 
         return $data->each(function ($item, $key) {
             if (!is_string($item) || empty($item)) {
                 throw new SignException($key.' must be filled in');
             }
-            if ('_timestamp' === $key && !$this->validateTimestamp($item)) {
+            if ('timestamp' === $key && !$this->validateTimestamp($item)) {
                 throw new SignException('request time out');
             }
         })->all();
@@ -94,7 +98,7 @@ class SignManager
      */
     protected function validateTimestamp($timestamp)
     {
-        return !empty($timestamp) && Carbon::parse($timestamp)->diffInRealSeconds() > 60;
+        return !empty($timestamp) && Carbon::parse($timestamp)->diffInRealSeconds() < 600;
     }
 
     /**
