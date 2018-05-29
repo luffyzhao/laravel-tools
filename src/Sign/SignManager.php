@@ -7,6 +7,7 @@ use luffyzhao\laravelTools\Sign\Drivers\Md5Sign;
 use luffyzhao\laravelTools\Sign\Drivers\RsaSign;
 use luffyzhao\laravelTools\Sign\Exceptions\SignException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 
 class SignManager
 {
