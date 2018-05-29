@@ -51,9 +51,9 @@ class SignManager
     public function validate(array $request): bool
     {
         $data = collect($request)->except(['_sign', '_sign_type'])->all();
-        extract($this->validateParams($request));
+        $header = $this->validateParams($request);
 
-        return $this->signObj($signType)->verify($data, $sign);
+        return $this->signObj($header['_sign_type'])->verify($data, $header['_sign']);
     }
 
     /**
