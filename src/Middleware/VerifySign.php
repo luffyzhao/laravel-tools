@@ -2,6 +2,7 @@
 /**
  * luffy-laravel-tools
  * VerifySign.php.
+ *
  * @author luffyzhao@vip.126.com
  */
 
@@ -14,10 +15,11 @@ use luffyzhao\laravelTools\Support\Facades\Sign;
 
 class VerifySign
 {
-    function handle(Request $request, Closure $next, $guard = null){
-        if(Sign::validate($request->toArray())){
+    public function handle(Request $request, Closure $next, $guard = null)
+    {
+        if (Sign::validate($request)) {
             $next();
-        }else{
+        } else {
             throw new SignException('sign not true');
         }
     }
