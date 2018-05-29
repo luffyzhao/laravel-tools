@@ -22,7 +22,7 @@ class RsaSign extends CoreSign
     {
         // 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
         $prestr = $this->createLinkstring($this->sortKeys($data));
-        $res = openssl_get_privatekey($this->getPrivateKey());
+        $res = openssl_get_privatekey($this->getPublicKey());
         openssl_sign($prestr, $sign, $res);
         openssl_free_key($res);
 
@@ -44,7 +44,7 @@ class RsaSign extends CoreSign
     public function verify(array $data, string $sign): bool
     {
         $prestr = $this->createLinkstring($this->sortKeys($data));
-        $res = openssl_get_publickey($this->getPublicKey());
+        $res = openssl_get_publickey($this->getPrivateKey());
         $result = (bool) openssl_verify($prestr, base64_decode($sign), $res);
         openssl_free_key($res);
 
