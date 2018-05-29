@@ -22,6 +22,6 @@ class Sign extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'luffy.sign';
+        return 'luffyzhao.sign';
     }
 }

@@ -8,6 +8,7 @@ use luffyzhao\laravelTools\Console\MakeExcels;
 use luffyzhao\laravelTools\Console\MakeRepositories;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use luffyzhao\laravelTools\Sign\SignManager;
 use Maatwebsite\Excel\ExcelServiceProvider;
 
 class LaravelServiceProvider extends ServiceProvider
@@ -44,6 +45,8 @@ class LaravelServiceProvider extends ServiceProvider
         $this->app->register(ExcelServiceProvider::class);
 
         $this->registerLuffyCommand();
+
+        $this->registerSign();
     }
 
     /**
@@ -75,11 +78,23 @@ class LaravelServiceProvider extends ServiceProvider
     }
 
     /**
-     * 解析sql.
+     * 注册加签
+     * @method registerSign
      *
+     * @author luffyzhao@vip.126.com
+     */
+    protected function registerSign(){
+        $this->app->singleton('luffyzhao.sign', function ($app) {
+            return new SignManager;
+        });
+    }
+
+    /**
+     * 解析sql
      * @method sqlBindings
-     *
      * @param $sql
+     *
+     * @return string
      *
      * @author luffyzhao@vip.126.com
      */
@@ -98,4 +113,6 @@ class LaravelServiceProvider extends ServiceProvider
 
         return vsprintf($query, $sql->bindings);
     }
+
+
 }
