@@ -40,7 +40,6 @@ trait ResponseTrait
     {
         return response()->json([
             'data' => [],
-            'code' => $code,
             'message' => $message,
         ], $code);
     }
@@ -61,7 +60,6 @@ trait ResponseTrait
     {
         return response()->json([
             'data' => $data,
-            'code' => 200,
             'message' => $message,
         ]);
     }
