@@ -25,11 +25,6 @@ class LaravelServiceProvider extends ServiceProvider
         DB::listen(function ($sql) {
             Log::info($this->sqlBindings($sql));
         });
-
-        $this->publishes([
-            __DIR__.'/../Resources/assets' => resource_path('assets/luffyzhao'),
-            __DIR__.'/../Resources/welcome.blade.php' => resource_path('views/luffyzhao/welcome.blade.php'),
-        ], 'luffyzhao.assets');
     }
 
     /**
