@@ -19,13 +19,15 @@ abstract class CoreSign
      */
     public function sortKeys(array $data): array
     {
-        return (new Collection($data))->map(function ($item) {
+        $items = (new Collection($data))->map(function ($item) {
             if (is_object($item) || is_array($item)) {
                 return $this->sortKeys((array) $item);
             }
 
             return $item;
-        })->sortKeys()->all();
+        })->all();
+        ksort($items, SORT_REGULAR);
+        return $items;
     }
 
     /**
