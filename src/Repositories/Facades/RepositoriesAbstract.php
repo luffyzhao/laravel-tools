@@ -238,13 +238,19 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @param Model $model
      * @param array $values
      *
+     * @param array $attributes
      * @return Model
      *
      * @author luffyzhao@vip.126.com
      */
-    public function update(Model $model, array $values)
+    public function update(Model $model, array $values, array $attributes = [])
     {
-        $model->fill($values)->save();
+        if(!empty($attributes)){
+            $model = $model->where($attributes);
+        }
+
+        $model->fill($values)->save(['touch' => false]);
+
         return $model;
     }
 

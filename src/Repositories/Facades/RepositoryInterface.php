@@ -202,14 +202,15 @@ interface RepositoryInterface
      *
      * @method update
      *
-     * @param array $values 更新数据
      * @param Model $model
      *
+     * @param array $values 更新数据
+     * @param array $attributes
      * @return \Illuminate\Database\Eloquent\Model
      *
      * @author luffyzhao@vip.126.com
      */
-    public function update(Model $model, array $values);
+    public function update(Model $model, array $values, array $attributes = []);
 
     /**
      * 删除数据模型.
