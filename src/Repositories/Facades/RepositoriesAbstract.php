@@ -222,10 +222,35 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function simplePaginate(array $attributes, $perPage = null, $columns = ['*'])
     {
+        return $this->model->where($attributes)->select($columns)->simplePaginate($perPage);
+    }
+
+    /**
+     * 查找与属性匹配的记录
+     * @method limit
+     * @param array $attributes
+     * @param null $perPage
+     * @param array $columns
+     *
+     * @return mixed
+     *
+     * @author luffyzhao@vip.126.com
+     */
+    public function limit(array $attributes, $perPage = null, $columns = ['*']){
         return $this->model->where($attributes)->select($columns)->limit($perPage)->get();
     }
 
-
+    /**
+     * 创建模型.
+     *
+     * @method create
+     *
+     * @param array $attributes 属性
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     *
+     * @author luffyzhao@vip.126.com
+     */
     public function create(array $attributes = [])
     {
         return $this->model->create($attributes);

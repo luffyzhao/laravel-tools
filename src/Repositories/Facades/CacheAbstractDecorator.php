@@ -347,6 +347,34 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
     }
 
     /**
+     * 查找与属性匹配的记录
+     * @method limit
+     * @param array $attributes
+     * @param null $perPage
+     * @param array $columns
+     *
+     * @return mixed
+     *
+     * @author luffyzhao@vip.126.com
+     */
+    public function limit(array $attributes, $perPage = null, $columns = ['*']){
+        $cacheKey = $this->getCache('limit', [
+            $attributes,
+            $perPage,
+            $columns,
+        ]);
+
+        if (!is_string($cacheKey)) {
+            return $cacheKey;
+        }
+
+        $model = $this->repo->limit($attributes, $perPage, $columns);
+        $this->cache->put($cacheKey, $model);
+
+        return $model;
+    }
+
+    /**
      * 创建模型.
      *
      * @method create

@@ -198,6 +198,19 @@ interface RepositoryInterface
     public function create(array $attributes = []);
 
     /**
+     * 查找与属性匹配的记录
+     * @method limit
+     * @param array $attributes
+     * @param null $perPage
+     * @param array $columns
+     *
+     * @return mixed
+     *
+     * @author luffyzhao@vip.126.com
+     */
+    public function limit(array $attributes, $perPage = null, $columns = ['*']);
+
+    /**
      * 更新模型.
      *
      * @method update
