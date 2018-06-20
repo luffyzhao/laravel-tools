@@ -55,7 +55,7 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
      */
     public function find($id, array $columns = ['*'])
     {
-        $cacheKey = $this->find('findMany', [
+        $cacheKey = $this->getCache('find', [
           $id,
           $columns,
         ]);
