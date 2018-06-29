@@ -42,7 +42,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @method find
      *
-     * @param int   $id      主键ID
+     * @param int $id 主键ID
      * @param array $columns 获取字段
      *
      * @return Collection
@@ -57,8 +57,8 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     /**
      * 通过主键查找多个模型。
      *
-     * @param \Illuminate\Contracts\Support\Arrayable|array $ids     主键IDs
-     * @param array                                         $columns 获取字段
+     * @param \Illuminate\Contracts\Support\Arrayable|array $ids 主键IDs
+     * @param array $columns 获取字段
      *
      * @return \Illuminate\Database\Eloquent\Collection
      *
@@ -75,7 +75,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @method findWhere
      *
      * @param array $attributes Where条件
-     * @param array $columns    获取字段
+     * @param array $columns 获取字段
      *
      * @return Illuminate\Support\Collection|static|null
      *
@@ -91,8 +91,8 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @method findValue
      *
-     * @param array  $attributes Where条件
-     * @param string $columns    获取字段
+     * @param array $attributes Where条件
+     * @param string $columns 获取字段
      *
      * @return mixed
      *
@@ -125,7 +125,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @method getWhere
      *
      * @param array $attributes Where条件
-     * @param array $columns    获取字段
+     * @param array $columns 获取字段
      *
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      *
@@ -149,7 +149,8 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function chunkById(array $attributes, $count, callable $callback, $column = null, $alias = null){
+    public function chunkById(array $attributes, $count, callable $callback, $column = null, $alias = null)
+    {
         return $this->model->where($attributes)->chunkById($count, $callback, $column, $alias);
     }
 
@@ -159,7 +160,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @method firstOrCreate
      *
      * @param array $attributes Where条件
-     * @param array $values     附加填充值
+     * @param array $values 附加填充值
      *
      * @return \Illuminate\Database\Eloquent\Model
      *
@@ -176,7 +177,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @method updateOrCreate
      *
      * @param array $attributes Where条件
-     * @param array $values     附加填充值
+     * @param array $values 附加填充值
      *
      * @return \Illuminate\Database\Eloquent\Model
      *
@@ -192,10 +193,10 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @method paginate
      *
-     * @param array  $attributes Where条件
+     * @param array $attributes Where条件
      * @param [type] $perPage    每页多少条
-     * @param array  $columns    获取字段
-     * @param string $pageName   分页input字段
+     * @param array $columns 获取字段
+     * @param string $pageName 分页input字段
      * @param [type] $page       当前页码
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
@@ -212,9 +213,9 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @method simplePaginate
      *
-     * @param array  $attributes Where条件
+     * @param array $attributes Where条件
      * @param [type] $perPage    多少条
-     * @param array  $columns    获取字段
+     * @param array $columns 获取字段
      *
      * @return \Illuminate\Contracts\Pagination\Paginator
      *
@@ -236,7 +237,8 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function limit(array $attributes, $perPage = null, $columns = ['*']){
+    public function limit(array $attributes, $perPage = null, $columns = ['*'])
+    {
         return $this->model->where($attributes)->select($columns)->limit($perPage)->get();
     }
 
@@ -270,13 +272,30 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function update(Model $model, array $values, array $attributes = [])
     {
-        if(!empty($attributes)){
+        if (!empty($attributes)) {
             $model = $model->where($attributes);
         }
 
         $model->fill($values)->save(['touch' => false]);
 
         return $model;
+    }
+
+    /**
+     * 根据条件更新
+     * @method updateWhere
+     * @param array $values
+     * @param array $attributes
+     *
+     * @return bool|void
+     *
+     * @author luffyzhao@vip.126.com
+     */
+    public function updateWhere(array $values, array $attributes)
+    {
+        $model = $this->model->newInstance();
+
+        return $model->where($attributes)->update($values);
     }
 
     /**

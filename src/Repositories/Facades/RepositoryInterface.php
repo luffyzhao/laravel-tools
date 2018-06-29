@@ -226,6 +226,18 @@ interface RepositoryInterface
     public function update(Model $model, array $values, array $attributes = []);
 
     /**
+     * 根据条件更新
+     * @method updateWhere
+     * @param array $values
+     * @param array $attributes
+     *
+     * @return boolean
+     *
+     * @author luffyzhao@vip.126.com
+     */
+    public function updateWhere(array $values, array $attributes);
+
+    /**
      * 删除数据模型.
      *
      * @method delete

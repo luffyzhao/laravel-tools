@@ -413,6 +413,23 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
     }
 
     /**
+     * 根据条件更新
+     * @method updateWhere
+     * @param array $values
+     * @param array $attributes
+     *
+     * @return bool|void
+     *
+     * @author luffyzhao@vip.126.com
+     */
+    public function updateWhere(array $values, array $attributes)
+    {
+        $this->cache->flush();
+
+        return $this->repo->updateWhere($values, $attributes);
+    }
+
+    /**
      * 删除数据模型.
      *
      * @method delete
