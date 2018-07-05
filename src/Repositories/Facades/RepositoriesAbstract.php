@@ -214,14 +214,16 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @method simplePaginate
      *
      * @param array $attributes Where条件
-     * @param [type] $perPage    多少条
+     * @param null $perPage
      * @param array $columns 获取字段
      *
+     * @param string $pageName
+     * @param null $page
      * @return \Illuminate\Contracts\Pagination\Paginator
      *
      * @author luffyzhao@vip.126.com
      */
-    public function simplePaginate(array $attributes, $perPage = null, $columns = ['*'])
+    public function simplePaginate(array $attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
         return $this->model->where($attributes)->select($columns)->simplePaginate($perPage);
     }
