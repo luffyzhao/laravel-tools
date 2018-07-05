@@ -2,10 +2,11 @@
 
 namespace luffyzhao\laravelTools\Searchs\Facades;
 
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Str;
 use luffyzhao\laravelTools\Searchs\Exceptions\SearchException;
 
-abstract class SearchAbstract
+abstract class SearchAbstract implements Arrayable
 {
     /**
      * 关系映射.
@@ -19,6 +20,12 @@ abstract class SearchAbstract
      * @var [type]
      */
     protected $attributes = [];
+
+    /**
+     * @var array
+     * @author luffyzhao@vip.126.com
+     */
+    protected $data = [];
     
     /**
      * 条件.
@@ -43,28 +50,25 @@ abstract class SearchAbstract
     protected $parses = [
         'in', 'null', 'no null', 'date', 'month', 'day', 'year', 'raw', 'between',
     ];
-    
+
     /**
-     * 构造函数.
-     *
-     * @method __construct
-     *
-     * @param array $attributes [description]
-     *
-     * @author luffyzhao@vip.126.com
+     * 构造函数
+     * SearchAbstract constructor.
+     * @param array $attributes
+     * @throws SearchException
      */
     public function __construct(array $attributes)
     {
         $this->attributes = $attributes;
+
+        $this->data = $this->handle();
     }
-    
+
     /**
      * 获取属性真实值
-     *
      * @method getAttr
-     *
-     * @param string $key   值性值
-     * @param mixed  $value 默认值
+     * @param $key
+     * @param $default
      *
      * @return mixed
      *
@@ -80,13 +84,13 @@ abstract class SearchAbstract
         
         return $default;
     }
-    
+
     /**
-     * 执行.
-     *
+     * 执行
      * @method handle
      *
-     * @return [type] [description]
+     * @return array
+     * @throws SearchException
      *
      * @author luffyzhao@vip.126.com
      */
@@ -106,17 +110,16 @@ abstract class SearchAbstract
         
         return $attributes;
     }
-    
+
     /**
      * 验证
-     *
      * @method validate
+     * @param $key
+     * @param $value
+     * @param $attr
      *
-     * @param  [type] $key   字段
-     * @param  [type] $value 条件
-     * @param  [type] $attr  值
-     *
-     * @return bool
+     * @return array
+     * @throws SearchException
      *
      * @author luffyzhao@vip.126.com
      */
@@ -218,6 +221,6 @@ abstract class SearchAbstract
      */
     public function toArray()
     {
-        return $this->handle();
+        return $this->data;
     }
 }
