@@ -5,6 +5,7 @@ namespace luffyzhao\laravelTools\Console;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class MakeRepositories extends GeneratorCommand
 {
@@ -13,7 +14,7 @@ class MakeRepositories extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'make:repo {name}';
+    protected $name = 'make:repo';
 
     /**
      * The console command description.
@@ -30,9 +31,13 @@ class MakeRepositories extends GeneratorCommand
     protected $type = 'Repository command';
 
     /**
-     * Execute the console command.
+     * 执行handle
+     * @method handle
      *
-     * @return mixed
+     * @return bool|null
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     *
+     * @author luffyzhao@vip.126.com
      */
     public function handle()
     {
@@ -52,31 +57,30 @@ class MakeRepositories extends GeneratorCommand
     }
 
     /**
-     * Build the class with the given name.
+     * 生成仓库类
+     * @method makeRepo
+     * @param $name
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      *
-     * @param string $name
-     *
-     * @return string
+     * @author luffyzhao@vip.126.com
      */
     protected function makeRepo($name)
     {
         $stubs = $this->getStub();
         foreach ($stubs as $key => $file) {
             $stub = $this->files->get($file);
-            $path = str_replace('.stub', '.php', pathinfo($file, PATHINFO_BASENAME));
-            $this->files->put($this->getPath($name).'/'.$path, $this->replaceModel($stub, $name));
+            $this->files->put($this->getPath($name).'/'.$key.'.php', $this->replaceModel($stub, $name));
         }
+
     }
 
     /**
-     * [replaceModel description].
-     *
+     * DummyModel字符替换
      * @method replaceModel
+     * @param $stub
+     * @param $name
      *
-     * @param [type] $stub [description]
-     * @param [type] $name [description]
-     *
-     * @return [type] [description]
+     * @return mixed
      *
      * @author luffyzhao@vip.126.com
      */
@@ -86,14 +90,11 @@ class MakeRepositories extends GeneratorCommand
     }
 
     /**
-     * 模型是否存在.
-     *
+     * 模型是否存在
      * @method existsModel
+     * @param $name
      *
-     * @param [type] $name [description]
-     *
-     * @return [type] [description]
-     *                author
+     * @author luffyzhao@vip.126.com
      */
     public function existsModel($name)
     {
@@ -107,11 +108,13 @@ class MakeRepositories extends GeneratorCommand
     }
 
     /**
-     * Get the fully-qualified model class name.
-     *
-     * @param string $model
+     * 仓库名称格式化
+     * @method parseModel
+     * @param $model
      *
      * @return string
+     *
+     * @author luffyzhao@vip.126.com
      */
     protected function parseModel($model)
     {
@@ -129,11 +132,13 @@ class MakeRepositories extends GeneratorCommand
     }
 
     /**
-     * Determine if the class already exists.
-     *
+     * 仓库是否存在
+     * @method alreadyExists
      * @param string $rawName
      *
      * @return bool
+     *
+     * @author luffyzhao@vip.126.com
      */
     protected function alreadyExists($rawName)
     {
@@ -141,11 +146,13 @@ class MakeRepositories extends GeneratorCommand
     }
 
     /**
-     * Get the destination class path.
-     *
+     * 获取仓库路径
+     * @method getPath
      * @param string $name
      *
      * @return string
+     *
+     * @author luffyzhao@vip.126.com
      */
     protected function getPath($name)
     {
@@ -155,11 +162,13 @@ class MakeRepositories extends GeneratorCommand
     }
 
     /**
-     * Build the directory for the class if necessary.
-     *
+     * 创建目录
+     * @method makeDirectory
      * @param string $path
      *
      * @return string
+     *
+     * @author luffyzhao@vip.126.com
      */
     protected function makeDirectory($path)
     {
@@ -171,29 +180,57 @@ class MakeRepositories extends GeneratorCommand
     }
 
     /**
-     * Get the stub file for the generator.
+     * 获取stub
+     * @method getStub
      *
-     * @return string
+     * @return array|string
+     *
+     * @author luffyzhao@vip.126.com
      */
     protected function getStub()
     {
-        return [
-          __DIR__.'/../Repositories/stubs/Cache.stub',
-          __DIR__.'/../Repositories/stubs/Eloquent.stub',
-          __DIR__.'/../Repositories/stubs/Interfaces.stub',
-          __DIR__.'/../Repositories/stubs/Provider.stub',
+        $data = [
+            'Eloquent' => __DIR__.'/../Repositories/stubs/Eloquent.stub',
+            'Interfaces' => __DIR__.'/../Repositories/stubs/Interfaces.stub',
         ];
+
+        if($this->option('cache')){
+            $data['Provider'] = __DIR__.'/../Repositories/stubs/Provider_cache.stub';
+            $data['Cache'] = __DIR__.'/../Repositories/stubs/Cache.stub';
+        }else{
+            $data['Provider'] =__DIR__.'/../Repositories/stubs/Provider.stub';
+        }
+
+        return $data;
     }
 
     /**
-     * Get the console command arguments.
+     * 默认参数
+     * @method getArguments
      *
      * @return array
+     *
+     * @author luffyzhao@vip.126.com
      */
     protected function getArguments()
     {
         return [
-            ['name', InputArgument::REQUIRED, 'The name of the command.'],
+            ['name', InputArgument::REQUIRED, '仓库名称'],
+        ];
+    }
+
+    /**
+     * option参数
+     * @method getOptions
+     *
+     * @return array
+     *
+     * @author luffyzhao@vip.126.com
+     */
+    protected function getOptions()
+    {
+        return [
+            ['cache', 'c', InputOption::VALUE_NONE, '是否缓存'],
         ];
     }
 }
