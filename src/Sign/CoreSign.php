@@ -19,14 +19,17 @@ abstract class CoreSign
      */
     public function sortKeys(array $data): array
     {
-        $items = (new Collection($data))->map(function ($item) {
-            if (is_object($item) || is_array($item)) {
-                return $this->sortKeys((array) $item);
-            }
+        $items = (new Collection($data))->map(
+            function ($item) {
+                if (is_object($item) || is_array($item)) {
+                    return $this->sortKeys((array)$item);
+                }
 
-            return $item;
-        })->all();
+                return $item;
+            }
+        )->all();
         ksort($items, SORT_REGULAR);
+
         return $items;
     }
 
@@ -48,14 +51,19 @@ abstract class CoreSign
             foreach ($data as $key => $val) {
                 $key = ('' === $pix ? $key : $pix."[{$key}]");
                 if (is_object($val) || is_array($val)) {
-                    $sign .= $this->createLinkstring((array) $val, $key).'&';
+                    $val = (array)$val;
+                    if (!empty($val)) {
+                        $sign .= $this->createLinkstring((array)$val, $key).'&';
+                    } else {
+                        $sign .= $key.'=&';
+                    }
                 } else {
                     $sign .= $key.'='.$val.'&';
                 }
             }
         }
         //去掉最后一个&字符
-        $sign = substr($sign, 0, mb_strlen($sign) - 1);
+        $sign = trim($sign, '&');
         //如果存在转义字符，那么去掉转义
         if (get_magic_quotes_gpc()) {
             $sign = stripslashes($sign);
