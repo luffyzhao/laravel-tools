@@ -296,8 +296,8 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     public function updateWhere(array $values, array $attributes)
     {
         $model = $this->model->newInstance();
-
-        return $model->where($attributes)->update($values);
+        $data = array_intersect_key($values, array_flip($this->model->getFillable()));
+        return $model->where($attributes)->update($data);
     }
 
     /**
