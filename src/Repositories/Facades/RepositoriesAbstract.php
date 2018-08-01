@@ -371,10 +371,8 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     public function join(array $relations){
         foreach ($relations AS $key=>$value){
             $type = 'inner';
-            $where = '';
-            if(!is_numeric($key) && is_array($value)){
-                $type = $value[0] ?? 'inner';
-                $where = $value[1] ?? '';
+            if(!is_numeric($key)){
+                $type = $value;
                 $value = $key;
             }
             $relation = $this->getRelation($value);
@@ -384,8 +382,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
                     $this->model->getTable().'.'.$relation->getOwnerKey(),
                     '=',
                     $relation->getRelated()->getTable().'.'.$relation->getForeignKey(),
-                    $type,
-                    $where
+                    $type
                 );
             }else if($relation instanceof BelongsToMany) {
                 $this->model = $this->model->join(
@@ -393,8 +390,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
                     $this->model->getTable().'.'.$relation->getOwnerKey(),
                     '=',
                     $relation->getRelated()->getTable().'.'.$relation->getForeignKey(),
-                    $type,
-                    $where
+                    $type
                 );
             }else{
                 $this->model = $this->model->join(
@@ -402,8 +398,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
                     $relation->getQualifiedParentKeyName(),
                     '=',
                     $relation->getExistenceCompareKey(),
-                    $type,
-                    $where
+                    $type
                 );
             }
         }
