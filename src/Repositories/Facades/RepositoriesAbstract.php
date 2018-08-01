@@ -3,6 +3,8 @@
 namespace luffyzhao\laravelTools\Repositories\Facades;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
 abstract class RepositoriesAbstract implements RepositoryInterface
@@ -332,7 +334,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function make(array $with = array())
     {
-        $this->model = $this->model->with($with)->getModel();
+        $this->model = $this->model->with($with);
 
         return $this;
     }
@@ -350,12 +352,75 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     {
         foreach ($scope as $key => $value) {
             if (is_numeric($key)) {
-                $this->model = $this->model->{$value}()->getModel();
+                $this->model = $this->model->{$value}();
             } else {
-                $this->model = (call_user_func_array([$this->model, $key], $value))->getModel();
+                $this->model = call_user_func_array([$this->model, $key], $value);
             }
         }
 
         return $this;
+    }
+
+    /**
+     * join
+     * @method join
+     * @param array $relations
+     * @return $this
+     * @author luffyzhao@vip.126.com
+     */
+    public function join(array $relations){
+        foreach ($relations AS $key=>$value){
+            $type = 'inner';
+            if(!is_numeric($key)){
+                $type = $value[0];
+                $where = $value[1];
+                $value = $key;
+            }
+            $relation = $this->getRelation($value);
+            if ($relation instanceof BelongsTo) {
+                $this->model = $this->model->join(
+                    $relation->getRelated()->getTable(),
+                    $this->model->getTable().'.'.$relation->getOwnerKey(),
+                    '=',
+                    $relation->getRelated()->getTable().'.'.$relation->getForeignKey(),
+                    $type,
+                    $where
+                );
+            }else if($relation instanceof BelongsToMany) {
+                $this->model = $this->model->join(
+                    $relation->getRelated()->getTable(),
+                    $this->model->getTable().'.'.$relation->getOwnerKey(),
+                    '=',
+                    $relation->getRelated()->getTable().'.'.$relation->getForeignKey(),
+                    $type,
+                    $where
+                );
+            }else{
+                $this->model = $this->model->join(
+                    $relation->getRelated()->getTable(),
+                    $relation->getQualifiedParentKeyName(),
+                    '=',
+                    $relation->getExistenceCompareKey(),
+                    $type,
+                    $where
+                );
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * getRelation
+     * @method getRelation
+     * @param $name
+     * @return mixed
+     * @author luffyzhao@vip.126.com
+     */
+    protected function getRelation($name){
+        if($this->model instanceof Model){
+            return $this->model->$name();
+        }else{
+            return $this->model->getModel()->$name();
+        }
     }
 }
