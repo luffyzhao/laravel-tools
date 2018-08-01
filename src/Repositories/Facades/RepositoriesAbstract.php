@@ -371,9 +371,10 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     public function join(array $relations){
         foreach ($relations AS $key=>$value){
             $type = 'inner';
-            if(!is_numeric($key)){
-                $type = $value[0];
-                $where = $value[1];
+            $where = '';
+            if(!is_numeric($key) && is_array($value)){
+                $type = $value[0] ?? 'inner';
+                $where = $value[1] ?? '';
                 $value = $key;
             }
             $relation = $this->getRelation($value);
