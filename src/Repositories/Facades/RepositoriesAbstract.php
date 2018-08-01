@@ -332,7 +332,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function make(array $with = array())
     {
-        $this->model = $this->model->with($with);
+        $this->model = $this->model->with($with)->getModel();
 
         return $this;
     }
@@ -350,9 +350,9 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     {
         foreach ($scope as $key => $value) {
             if (is_numeric($key)) {
-                $this->model = $this->model->{$value}();
+                $this->model = $this->model->{$value}()->getModel();
             } else {
-                $this->model = call_user_func_array([$this->model, $key], $value);
+                $this->model = (call_user_func_array([$this->model, $key], $value))->getModel();
             }
         }
 
