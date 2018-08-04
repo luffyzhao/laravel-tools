@@ -8,10 +8,12 @@
 namespace luffyzhao\laravelTools\Events;
 
 
+use Illuminate\Queue\SerializesModels;
 use luffyzhao\laravelTools\Auths\RedisTokeSubject;
 
 class AfterLogin
 {
+    use SerializesModels;
     /**
      * @var RedisTokeSubject
      * @author luffyzhao@vip.126.com
