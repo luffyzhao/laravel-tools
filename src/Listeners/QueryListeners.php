@@ -52,7 +52,7 @@ class QueryListeners
 
         $sql =  vsprintf($query, $queryExecuted->bindings);
 
-        return '[name:'.$queryExecuted->connectionName.']'.'[time:'.$queryExecuted->time.']' . $sql;
+        return '['.$queryExecuted->connectionName.']' . $sql .'['.$queryExecuted->time.']';
     }
 
 }
