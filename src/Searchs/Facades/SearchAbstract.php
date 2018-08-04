@@ -2,6 +2,7 @@
 
 namespace luffyzhao\laravelTools\Searchs\Facades;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Str;
 use luffyzhao\laravelTools\Searchs\Exceptions\SearchException;
@@ -79,7 +80,7 @@ abstract class SearchAbstract implements Arrayable
         $method = 'get' . Str::camel($key) . 'Attribute';
 
         if (method_exists($this, $method)) {
-            $default = $this->$method($default, $this->attributes);
+            $default = call_user_func_array([$this, $method], [$default, $this->attributes]);
         }
         
         return $default;
@@ -208,7 +209,17 @@ abstract class SearchAbstract implements Arrayable
      * @author luffyzhao@vip.126.com
      */
     protected function formatDatetime($dateTime, $format = 'Y-m-d'){
-        return (new \DateTime($dateTime))->format($format);
+        return Carbon::parse($dateTime)->format($format);
+    }
+
+    /**
+     * 默认数据
+     * @method defaultArray
+     * @return array
+     * @author luffyzhao@vip.126.com
+     */
+    protected function defaultArray(){
+        return [];
     }
     /**
      * 转数组.
@@ -221,6 +232,6 @@ abstract class SearchAbstract implements Arrayable
      */
     public function toArray()
     {
-        return $this->data;
+        return array_merge($this->data, $this->defaultArray());
     }
 }

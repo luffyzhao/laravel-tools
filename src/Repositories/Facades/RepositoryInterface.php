@@ -253,12 +253,28 @@ interface RepositoryInterface
     public function delete(Model $model);
 
     /**
+     * 通过查询删除模型
+     * @method deleteWhere
+     * @param array $attributes
+     * @return mixed
+     * @author luffyzhao@vip.126.com
+     */
+    public function deleteWhere(array $attributes);
+    /**
      * 使实体的一个新实例查询。
      *
      * @param array $with
      */
     public function make(array $with = array());
 
+    /**
+     * make别名
+     * @method with
+     * @param array $with
+     * @return mixed
+     * @author luffyzhao@vip.126.com
+     */
+    public function with(array $with = array());
     /**
      * 添加一个获取多个作用域
      *
@@ -271,4 +287,13 @@ interface RepositoryInterface
      * @author luffyzhao@vip.126.com
      */
     public function scope(array $scope);
+
+    /**
+     *
+     * @method join
+     * @param array $relations
+     * @return mixed
+     * @author luffyzhao@vip.126.com
+     */
+    public function join(array $relations);
 }

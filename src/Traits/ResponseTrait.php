@@ -5,22 +5,19 @@ namespace luffyzhao\laravelTools\Traits;
 trait ResponseTrait
 {
     /**
-     * 登录响应.
-     *
+     * 登录响应
      * @method respondWithToken
-     *
-     * @param [type] $token [description]
-     *
+     * @param $token
+     * @param int $ttl
      * @return \Illuminate\Http\JsonResponse
-     *
      * @author luffyzhao@vip.126.com
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken($token, $ttl = 3600)
     {
         return $this->respondWithSuccess([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
+            'expires_in' => $ttl,
         ]);
     }
 

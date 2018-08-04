@@ -22,9 +22,6 @@ class LaravelServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        DB::listen(function ($sql) {
-            Log::info($this->sqlBindings($sql));
-        });
     }
 
     /**

@@ -458,9 +458,37 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
     }
 
     /**
-     * Make a new instance of the entity to query on.
-     *
+     * 通过查询删除模型
+     * @method deleteWhere
+     * @param array $attributes
+     * @return mixed|void
+     * @author luffyzhao@vip.126.com
+     */
+    public function deleteWhere(array $attributes)
+    {
+        $this->cache->flush();
+        return $this->repo->deleteWhere($attributes);
+    }
+
+    /**
+     * 缓存
+     * @method join
+     * @param array $relations
+     * @return $this|mixed
+     * @author luffyzhao@vip.126.com
+     */
+    public function join(array $relations)
+    {
+        $this->repo = $this->repo->join($relations);
+        return $this;
+    }
+
+    /**
+     * 预加载
+     * @method make
      * @param array $with
+     * @return $this
+     * @author luffyzhao@vip.126.com
      */
     public function make(array $with = array())
     {
@@ -470,14 +498,22 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
     }
 
     /**
+     * make别名
+     * @method with
+     * @param array $with
+     * @return CacheAbstractDecorator|mixed
+     * @author luffyzhao@vip.126.com
+     */
+    public function with(array $with = array())
+    {
+        return $this->make($with);
+    }
+
+    /**
      * 添加一个获取多个作用域
-     *
      * @method scope
-     *
-     * @param array $scope [description]
-     *
-     * @return [type] [description]
-     *
+     * @param array $scope
+     * @return $this
      * @author luffyzhao@vip.126.com
      */
     public function scope(array $scope)
@@ -488,15 +524,11 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
     }
 
     /**
-     * 获取缓存.
-     *
-     * @method getCacheKey
-     *
-     * @param [type] $method  请求方法
-     * @param array  $parames 参数
-     *
-     * @return mixed
-     *
+     * 获取缓存
+     * @method getCache
+     * @param $method
+     * @param array $parames
+     * @return string
      * @author luffyzhao@vip.126.com
      */
     protected function getCache($method, array $parames = [])
