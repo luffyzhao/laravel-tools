@@ -26,6 +26,13 @@ class RedisToken
      * @author luffyzhao@vip.126.com
      */
     protected $prefix = 'auth:redis:token:';
+
+    /**
+     * 过期时间
+     * @var int
+     * @author luffyzhao@vip.126.com
+     */
+    protected $expired = 3600;
     /**
      * @var Request
      * @author luffyzhao@vip.126.com
@@ -82,12 +89,14 @@ class RedisToken
      * @return bool|mixed
      * @author luffyzhao@vip.126.com
      */
-    public function getIdentifier(){
-        if($token = $this->parse()){
-            if(Redis::exists($this->prefix . $token)){
-                return Redis::get($this->prefix . $token);
+    public function getIdentifier()
+    {
+        if ($token = $this->parse()) {
+            if (Redis::exists($this->prefix.'key:'.$token)) {
+                return Redis::get($this->prefix.'key:'.$token);
             }
         }
+
         return false;
     }
 
@@ -98,14 +107,30 @@ class RedisToken
      * @return bool|string
      * @author luffyzhao@vip.126.com
      */
-    public function setIdentifier($id){
-        $key = $this->prefix . Str::uuid()->getHex();
-        if(Redis::set($key, $id)){
+    public function setIdentifier($id)
+    {
+        $key = Str::uuid()->getHex();
+        if (Redis::setex($this->prefix.'key:'.$key, $this->getExpired(),$id)) {
+            Redis::setex($this->prefix. 'value:'. $id, $this->getExpired(), $key);
             return $key;
         }
+
         return false;
     }
 
+    /**
+     * 删除token记录
+     * @method delIdentifier
+     * @param $id
+     * @author luffyzhao@vip.126.com
+     */
+    public function delIdentifier($id){
+        if (Redis::exists($this->prefix.'value:'.$id)) {
+            $token = Redis::get($this->prefix.'value:'.$id);
+            Redis::del($this->prefix.'value:'.$id);
+            Redis::del($this->prefix.'key:'.$token);
+        }
+    }
     /**
      * 尝试从请求头解析token。
      * @method parse
@@ -114,7 +139,7 @@ class RedisToken
      */
     protected function parse()
     {
-       return $this->request->headers->get($this->header) ?: $this->fromAltHeaders();
+        return $this->request->headers->get($this->header) ?: $this->fromAltHeaders();
     }
 
     /**
@@ -125,7 +150,9 @@ class RedisToken
      */
     protected function fromAltHeaders()
     {
-        return $this->request->server->get('HTTP_AUTHORIZATION') ?: $this->request->server->get('REDIRECT_HTTP_AUTHORIZATION');
+        return $this->request->server->get('HTTP_AUTHORIZATION') ?: $this->request->server->get(
+            'REDIRECT_HTTP_AUTHORIZATION'
+        );
     }
 
     /**
@@ -142,5 +169,21 @@ class RedisToken
     public function setTtl($ttl)
     {
         $this->ttl = $ttl;
+    }
+
+    /**
+     * @return int
+     */
+    public function getExpired()
+    {
+        return $this->expired;
+    }
+
+    /**
+     * @param int $expired
+     */
+    public function setExpired($expired)
+    {
+        $this->expired = $expired;
     }
 }

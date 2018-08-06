@@ -12,8 +12,10 @@ use Illuminate\Auth\GuardHelpers;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Events\Dispatcher;
-use luffyzhao\laravelTools\Events\AfterLogin;
-use luffyzhao\laravelTools\Events\BeforeLogin;
+use luffyzhao\laravelTools\Events\Auths\AfterLogin;
+use luffyzhao\laravelTools\Events\Auths\AfterLogout;
+use luffyzhao\laravelTools\Events\Auths\BeforeLogin;
+use luffyzhao\laravelTools\Events\Auths\BeforeLogout;
 
 class RedisTokenGuard implements Guard
 {
@@ -79,18 +81,49 @@ class RedisTokenGuard implements Guard
      * @author luffyzhao@vip.126.com
      */
     public function login(RedisTokeSubject $user){
-        // 先不写事件
         if($this->events){
             $this->events->dispatch(new BeforeLogin($user));
         }
-
+        // 登录之前销毁之前的登录信息
+        $this->redisToken->delIdentifier($user->getIdentifier());
         $res = $this->redisToken->setIdentifier($user->getIdentifier());
+        $this->setUser($user);
 
         if($this->events){
             $this->events->dispatch(new AfterLogin($user));
         }
 
         return $res;
+    }
+
+    /**
+     * 销毁
+     * @method destroy
+     * @param RedisTokeSubject $user
+     * @author luffyzhao@vip.126.com
+     */
+    public function destroy(RedisTokeSubject $user){
+        if($this->events){
+            $this->events->dispatch(new BeforeLogout($user));
+        }
+
+        $this->redisToken->delIdentifier($user->getIdentifier());
+
+        if($this->events){
+            $this->events->dispatch(new AfterLogout($user));
+        }
+    }
+
+    /**
+     * 退出登录
+     * @method logout
+     * @author luffyzhao@vip.126.com
+     */
+    public function logout(){
+        if($this->check()){
+            $this->destroy($this->user());
+            $this->user = null;
+        }
     }
 
     /**
