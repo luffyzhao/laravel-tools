@@ -90,8 +90,8 @@ public function index(Request $request){
 ```
 
 ### 方法
-| 方法名 | 参数 | 说明 |
-| --- | --- | --- |
+| 方法名 | 参数 |
+| --- | --- |
 | getModel | 无|
 | newModel | 无| 
 | getTable | 无| 
