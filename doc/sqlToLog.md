@@ -6,9 +6,9 @@
 ### 使用
 在 laravel 自带的 EventServiceProvider 类里 listen 添加
 ```
- 'Illuminate\Database\Events' => [
-    'luffyzhao\laravelTools\Listeners\QueryListeners'
- ]
+ 'Illuminate\Database\Events\QueryExecuted' => [
+         'luffyzhao\laravelTools\Listeners\QueryListeners'
+   ]
 ```
 
 ### 生成事件
