@@ -445,10 +445,10 @@ abstract class RepositoriesAbstract implements RepositoryInterface
             $relation = $this->getRelation($value);
             if ($relation instanceof BelongsTo) {
                 $this->model = $this->model->join(
-                    $relation->getRelated()->getTable(),
-                    $this->model->getTable().'.'.$relation->getOwnerKey(),
+                    $relation->getRelated()->getTable().$relation->getForeignKey(),
+                    $this->model->getTable().'.',
                     '=',
-                    $relation->getRelated()->getTable().'.'.$relation->getForeignKey(),
+                    $relation->getRelated()->getTable().'.'.$relation->getOwnerKey(),
                     $type
                 );
             }else if($relation instanceof BelongsToMany) {
