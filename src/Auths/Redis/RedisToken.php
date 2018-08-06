@@ -5,7 +5,7 @@
  * @author luffyzhao@vip.126.com
  */
 
-namespace luffyzhao\laravelTools\Auths;
+namespace luffyzhao\laravelTools\Auths\Redis;
 
 
 use Illuminate\Http\Request;

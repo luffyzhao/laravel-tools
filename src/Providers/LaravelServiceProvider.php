@@ -3,6 +3,8 @@
 namespace luffyzhao\laravelTools\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use luffyzhao\laravelTools\Auths\Redis\RedisToken;
+use luffyzhao\laravelTools\Auths\Redis\RedisTokenGuard;
 use luffyzhao\laravelTools\Console\MakeSearchs;
 use luffyzhao\laravelTools\Console\MakeExcels;
 use luffyzhao\laravelTools\Console\MakeRepositories;
@@ -39,6 +41,8 @@ class LaravelServiceProvider extends ServiceProvider
         $this->registerLuffyCommand();
 
         $this->registerSign();
+
+        $this->extendAuthGuard();
     }
 
     /**
@@ -80,5 +84,21 @@ class LaravelServiceProvider extends ServiceProvider
             return new SignManager;
         });
     }
-    
+
+    /**
+     * redis-token 验证扩展
+     * @method extendAuthGuard
+     * @author luffyzhao@vip.126.com
+     */
+    protected function extendAuthGuard()
+    {
+        $this->app['auth']->extend('redis-token', function ($app, $name, array $config) {
+            $guard = new RedisTokenGuard(
+                $app['auth']->createUserProvider($config['provider']),
+                new RedisToken($app['request'])
+            );
+            $app->refresh('request', $guard, 'setRequest');
+            return $guard;
+        });
+    }
 }
