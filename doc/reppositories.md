@@ -31,6 +31,7 @@ Repository 模式将业务逻辑和数据访问分离开，两者之间通过 Re
 ```
 php artisan make:repo User
 ```
+
 #### 使用缓存
 ```php
 php artisan make:repo User --cache
@@ -91,28 +92,28 @@ public function index(Request $request){
 ### 方法
 | 方法名 | 参数 | 说明 |
 | --- | --- | --- |
-| getModel() | 无| 获取Model |
-| newModel() | 无| 创建一个干净的Model |
-| getTable() | 无| 获取TableName |
-| find($id, array $columns = ['*']) | id:主键, $columns 要获取的列| 通过主键从Repository 中提取一条数据 |
-| findMany($ids, $columns = ['*']) | id:主键集, $columns 要获取的列| 通过主键集从Repository 中提取N条数据 |
-| findWhere(array $attributes, array $columns = ['*']) | attributes:where条件, $columns 要获取的列| 通过where条件集从Repository 中提取一条数据 |
-| findValue(array $attributes, string $columns) | attributes:where条件, $columns 要获取的列| 通过where条件集从Repository 中提取某列的数据 |
-| get(array $columns) | $columns 要获取的列| 从Repository 中提取某些列的全部数据 |
-| getWhere(array $attributes, array $columns = ['*']) | attributes:where条件, $columns 要获取的列| 通过where条件集从 Repository 中提取某些列的数据 |
-| chunkById(array $attributes, $count, callable $callback, $column = null, $alias = null) | $columns 要获取的列， $count 每次获取多少条，$callback 回调处理，$column 不知道 怎么用文字表达， $alias 不知道 怎么用文字表达 | 结果块处理 |
-| firstOrCreate(array $attributes, array $values = []) | $attributes:where条件，$values 附加参数| Repository不存在就创建一个Repository |
-| updateOrCreate(array $attributes, array $values = []) | $attributes:where条件，$values 附加参数| Repository不存在就创建一个Repository |
-| paginate(array $attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null) | $attributes:where条件，$perPage 每页显示N条，$columns 要获取的列， $pageName 页码key,  $page 当前页码| 通过where条件集从Repository 中分页提取 |
-| simplePaginate(array $attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null) | $attributes:where条件，$perPage 每页显示N条，$columns 要获取的列， $pageName 页码key,  $page 当前页码| 通过where条件集从Repository 中分页提取  |
-| limit(array $attributes, $perPage = null, $columns = ['*']) | $attributes:where条件，$perPage 每页显示N条，$columns 要获取的列| 通过where条件集从Repository 中$perPage提取条数据 |
-| create(array $attributes) | $attributes: create数据| 通过Repository创建一个model |
-| update(Model $model, array $values, array $attributes = []) | $model: Model, $values 要更改的数据，array $attributes where条件 | 通过Model修改数据 |
-| updateWhere(array $values, array $attributes) | array $values 要更改的数据 $attributes where条件 | 通过where条件修改数据 |
-|  delete(Model $model) | $model Model | 通过Model删除  |
-|  deleteWhere(array $attributes) | $attributes where条件 | 通过Where删除  |
-|  with(array $with = array()) | $with 渴求式加载 | 获取对应model的关联数据 |
-|  make(array $with = array()) | $with 渴求式加载 | with别名 |
-|  scope(array $scope) | $scope 查询作用域 | 设置查询作用域 |
-|  join(array $relations) | $relations 要关联的模型 | 通过关联设置联表 |
+| getModel | 无| 获取Model |
+| newModel | 无| 创建一个干净的Model |
+| getTable | 无| 获取TableName |
+| find | id:主键, $columns 要获取的列| 通过主键从Repository 中提取一条数据 |
+| findMany | id:主键集, $columns 要获取的列| 通过主键集从Repository 中提取N条数据 |
+| findWhere | attributes:where条件, $columns 要获取的列| 通过where条件集从Repository 中提取一条数据 |
+| findValue | attributes:where条件, $columns 要获取的列| 通过where条件集从Repository 中提取某列的数据 |
+| get | $columns 要获取的列| 从Repository 中提取某些列的全部数据 |
+| getWhere | attributes:where条件, $columns 要获取的列| 通过where条件集从 Repository 中提取某些列的数据 |
+| chunkById | $columns 要获取的列， $count 每次获取多少条，$callback 回调处理，$column 不知道 怎么用文字表达， $alias 不知道 怎么用文字表达 | 结果块处理 |
+| firstOrCreate | $attributes:where条件，$values 附加参数| Repository不存在就创建一个Repository |
+| updateOrCreate | $attributes:where条件，$values 附加参数| Repository不存在就创建一个Repository |
+| paginate | $attributes:where条件，$perPage 每页显示N条，$columns 要获取的列， $pageName 页码key,  $page 当前页码| 通过where条件集从Repository 中分页提取 |
+| simplePaginate | $attributes:where条件，$perPage 每页显示N条，$columns 要获取的列， $pageName 页码key,  $page 当前页码| 通过where条件集从Repository 中分页提取  |
+| limit | $attributes:where条件，$perPage 每页显示N条，$columns 要获取的列| 通过where条件集从Repository 中$perPage提取条数据 |
+| create| $attributes: create数据| 通过Repository创建一个model |
+| update | $model: Model, $values 要更改的数据，array $attributes where条件 | 通过Model修改数据 |
+| updateWhere | array $values 要更改的数据 $attributes where条件 | 通过where条件修改数据 |
+|  delete | $model Model | 通过Model删除  |
+|  deleteWhere | $attributes where条件 | 通过Where删除  |
+|  with | $with 渴求式加载 | 获取对应model的关联数据 |
+|  make | $with 渴求式加载 | with别名 |
+|  scope | $scope 查询作用域 | 设置查询作用域 |
+|  join | $relations 要关联的模型 | 通过关联设置联表 |
 
