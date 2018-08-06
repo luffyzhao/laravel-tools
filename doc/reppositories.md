@@ -1,4 +1,4 @@
-### 模式实现业务逻辑和数据访问的分离
+### Repository 模式
 
 ### 插件介绍
 
@@ -12,18 +12,6 @@ Repository 模式将业务逻辑和数据访问分离开，两者之间通过 Re
 
 ![Respository原理](./images/Respository原理图.png)
 
-### 配置
-
-#### 添加服务提供商
-
-将下面这行添加至 config/app.php 文件 providers 数组中：
-
-```php
-'providers' => [
-  ...
-  App\Plugins\Auth\Providers\LaravelServiceProvider::class
- ]
-```
 
 ### 创建 Repository
 
@@ -59,6 +47,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Repositories\Modules\User\Interfaces;
 
 class HomeController extends Controller
 {

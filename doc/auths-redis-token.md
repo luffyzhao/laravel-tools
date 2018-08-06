@@ -4,18 +4,6 @@
 
 把token保存在redis。同时支持登录过期时间设置，登录之前，登录之后事件处理。
 
-### 配置
-
-#### 添加服务提供商
-
-将下面这行添加至 config/app.php 文件 providers 数组中：
-
-```php
-'providers' => [
-  ...
-  App\Plugins\Auth\Providers\LaravelServiceProvider::class
- ]
-```
 
 ### 配置 Auth guard
 

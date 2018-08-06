@@ -110,7 +110,7 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function findWhere(array $attributes, array $columns = ['*'])
+    public function findWhere($attributes, array $columns = ['*'])
     {
         $cacheKey = $this->getCache('findWhere', [
           $attributes,
@@ -140,7 +140,7 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function findValue(array $attributes, string $columns)
+    public function findValue($attributes, string $columns)
     {
         $cacheKey = $this->getCache('findValue', [
           $attributes,
@@ -198,7 +198,7 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function getWhere(array $attributes, array $columns = ['*'])
+    public function getWhere($attributes, array $columns = ['*'])
     {
         $cacheKey = $this->getCache('getWhere', [
           $attributes,
@@ -229,7 +229,7 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function chunkById(array $attributes, $count, callable $callback, $column = null, $alias = null){
+    public function chunkById($attributes, $count, callable $callback, $column = null, $alias = null){
         $this->repo->chunkById($attributes, $count, $callback, $column, $alias);
     }
 
@@ -245,7 +245,7 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function firstOrCreate(array $attributes, array $values = [])
+    public function firstOrCreate($attributes, array $values = [])
     {
         $cacheKey = $this->getCache('firstOrCreate', [
           $attributes,
@@ -272,7 +272,7 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function updateOrCreate(array $attributes, array $values = [])
+    public function updateOrCreate($attributes, array $values = [])
     {
         $this->cache->flush();
         return $this->repo->updateOrCreate($attributes, $values);
@@ -293,7 +293,7 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function paginate(array $attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    public function paginate($attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
         if(!$page){
             $page = request()->input($pageName);
@@ -332,7 +332,7 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function simplePaginate(array $attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    public function simplePaginate($attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
         if(!$page){
             $page = request()->input($pageName);
@@ -367,7 +367,7 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function limit(array $attributes, $perPage = null, $columns = ['*']){
+    public function limit($attributes, $perPage = null, $columns = ['*']){
         $cacheKey = $this->getCache('limit', [
             $attributes,
             $perPage,
@@ -464,7 +464,7 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
      * @return mixed|void
      * @author luffyzhao@vip.126.com
      */
-    public function deleteWhere(array $attributes)
+    public function deleteWhere($attributes)
     {
         $this->cache->flush();
         return $this->repo->deleteWhere($attributes);

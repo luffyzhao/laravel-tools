@@ -101,7 +101,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function findWhere(array $attributes, array $columns = ['*'])
+    public function findWhere($attributes, array $columns = ['*'])
     {
         $res = $this->model->where($this->parseWhere($attributes))->firstOrFail($columns);
         $this->newModel();
@@ -120,7 +120,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function findValue(array $attributes, string $columns)
+    public function findValue($attributes, string $columns)
     {
         $res = $this->model->where($this->parseWhere($attributes))->value($columns);
         $this->newModel();
@@ -157,7 +157,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function getWhere(array $attributes, array $columns = ['*'])
+    public function getWhere($attributes, array $columns = ['*'])
     {
         $res = $this->model->where($this->parseWhere($attributes))->get($columns);
         $this->newModel();
@@ -177,7 +177,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function chunkById(array $attributes, $count, callable $callback, $column = null, $alias = null)
+    public function chunkById($attributes, $count, callable $callback, $column = null, $alias = null)
     {
         $res = $this->model->where($this->parseWhere($attributes))->chunkById($count, $callback, $column, $alias);
         $this->newModel();
@@ -196,7 +196,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function firstOrCreate(array $attributes, array $values = [])
+    public function firstOrCreate($attributes, array $values = [])
     {
         $res = $this->model->firstOrCreate($this->parseWhere($attributes), $values);
         $this->newModel();
@@ -215,7 +215,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function updateOrCreate(array $attributes, array $values = [])
+    public function updateOrCreate($attributes, array $values = [])
     {
         $res = $this->model->updateOrCreate($this->parseWhere($attributes), $values);
         $this->newModel();
@@ -237,7 +237,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function paginate(array $attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    public function paginate($attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
         $res = $this->model->where($this->parseWhere($attributes))->paginate($perPage, $columns, $pageName, $page);
         $this->newModel();
@@ -259,7 +259,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function simplePaginate(array $attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    public function simplePaginate($attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
         $res = $this->model->where($this->parseWhere($attributes))->select($columns)->simplePaginate($perPage);
         $this->newModel();
@@ -277,7 +277,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function limit(array $attributes, $perPage = null, $columns = ['*'])
+    public function limit($attributes, $perPage = null, $columns = ['*'])
     {
         $res = $this->model->where($this->parseWhere($attributes))->select($columns)->limit($perPage)->get();
         $this->newModel();
@@ -367,7 +367,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @return mixed|void
      * @author luffyzhao@vip.126.com
      */
-    public function deleteWhere(array $attributes)
+    public function deleteWhere($attributes)
     {
         $res = $this->model->where($this->parseWhere($attributes))->delete();
         $this->newModel();

@@ -66,7 +66,7 @@ interface RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function findWhere(array $attributes, array $columns = ['*']);
+    public function findWhere($attributes, array $columns = ['*']);
 
     /**
      * 从查询的第一个结果获取单个列的值。
@@ -80,7 +80,7 @@ interface RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function findValue(array $attributes, string $columns);
+    public function findValue($attributes, string $columns);
 
     /**
      * 获取全部模型.
@@ -107,7 +107,7 @@ interface RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function getWhere(array $attributes, array $columns = ['*']);
+    public function getWhere($attributes, array $columns = ['*']);
 
     /**
      * 分块处理
@@ -122,7 +122,7 @@ interface RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function chunkById(array $attributes, $count, callable $callback, $column = null, $alias = null);
+    public function chunkById($attributes, $count, callable $callback, $column = null, $alias = null);
 
     /**
      * 获取与属性匹配的第一个记录不存在就创建。
@@ -136,7 +136,7 @@ interface RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function firstOrCreate(array $attributes, array $values = []);
+    public function firstOrCreate($attributes, array $values = []);
 
     /**
      * 修改与属性匹配的记录不存在就创建。
@@ -150,7 +150,7 @@ interface RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function updateOrCreate(array $attributes, array $values = []);
+    public function updateOrCreate($attributes, array $values = []);
 
     /**
      * 查找与属性匹配的记录并分页.
@@ -167,7 +167,7 @@ interface RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function paginate(array $attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null);
+    public function paginate($attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null);
 
     /**
      * 查找与属性匹配的记录并分页.（简单版）.
@@ -184,7 +184,7 @@ interface RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function simplePaginate(array $attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null);
+    public function simplePaginate($attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null);
 
     /**
      * 创建模型.
@@ -210,7 +210,7 @@ interface RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function limit(array $attributes, $perPage = null, $columns = ['*']);
+    public function limit($attributes, $perPage = null, $columns = ['*']);
 
     /**
      * 更新模型.
@@ -259,7 +259,7 @@ interface RepositoryInterface
      * @return mixed
      * @author luffyzhao@vip.126.com
      */
-    public function deleteWhere(array $attributes);
+    public function deleteWhere($attributes);
     /**
      * 使实体的一个新实例查询。
      *

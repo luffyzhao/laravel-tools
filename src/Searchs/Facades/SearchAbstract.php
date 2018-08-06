@@ -58,8 +58,11 @@ abstract class SearchAbstract implements Arrayable
      * @param array $attributes
      * @throws SearchException
      */
-    public function __construct(array $attributes)
+    public function __construct(array $attributes = [])
     {
+        if(empty($attributes)){
+            $attributes = request()->all();
+        }
         $this->attributes = $attributes;
 
         $this->data = $this->handle();
