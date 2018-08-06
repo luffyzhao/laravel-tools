@@ -35,7 +35,11 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @author luffyzhao@vip.126.com
      */
     public function newModel(){
-        $this->model = $this->model->newInstance();
+        if($this->model instanceof Model){
+            $this->model = $this->model->newInstance();
+        }else{
+            $this->model = $this->model->getModel()->newInstance();
+        }
         return $this;
     }
 
