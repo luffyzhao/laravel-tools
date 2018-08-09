@@ -9,10 +9,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
+use luffyzhao\laravelTools\Repositories\Exceptions\RepoException;
 
 abstract class RepositoriesAbstract implements RepositoryInterface
 {
     protected $model;
+
+    protected $query;
 
     /**
      * 获取Model.
@@ -28,19 +31,18 @@ abstract class RepositoriesAbstract implements RepositoryInterface
         return $this->model;
     }
 
+
     /**
      * Create a new instance of the given model.
-     * @method newModel
-     * @return $this
+     * @method newQuery
+     * @return \Illuminate\Database\Eloquent\Builder
      * @author luffyzhao@vip.126.com
      */
-    public function newModel(){
-        if($this->model instanceof Model){
-            $this->model = $this->model->newInstance();
-        }else{
-            $this->model = $this->model->getModel()->newInstance();
+    public function newQuery(){
+        if(!$this->query){
+            $this->query = $this->model->newQuery();
         }
-        return $this;
+        return $this->query;
     }
 
     /**
@@ -71,8 +73,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function find($id, array $columns = ['*'])
     {
-        $res = $this->model->findOrFail($id, $columns);
-        $this->newModel();
+        $res = $this->newQuery()->findOrFail($id, $columns);
         return $res;
     }
 
@@ -88,8 +89,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function findMany($ids, $columns = ['*'])
     {
-        $res = $this->model->findMany($ids, $columns);
-        $this->newModel();
+        $res = $this->newQuery()->findMany($ids, $columns);
         return $res;
     }
 
@@ -101,15 +101,15 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @param array $attributes Where条件
      * @param array $columns 获取字段
      *
-     * @return Illuminate\Support\Collection|static|null
+     * @return \Illuminate\Database\Eloquent\Builder|Model
      *
      * @author luffyzhao@vip.126.com
      */
     public function findWhere($attributes, array $columns = ['*'])
     {
-        $res = $this->model->where($this->parseWhere($attributes))->firstOrFail($columns);
-        $this->newModel();
-        return $res;
+        return $this->newQuery()
+            ->where($this->parseWhere($attributes))
+            ->firstOrFail($columns);
     }
 
     /**
@@ -126,9 +126,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function findValue($attributes, string $columns)
     {
-        $res = $this->model->where($this->parseWhere($attributes))->value($columns);
-        $this->newModel();
-        return $res;
+        return $this->newQuery()->where($this->parseWhere($attributes))->value($columns);
     }
 
     /**
@@ -144,9 +142,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function get(array $columns)
     {
-        $res = $this->model->get($columns);
-        $this->newModel();
-        return $res;
+        return $this->newQuery()->get($columns);
     }
 
     /**
@@ -163,16 +159,16 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function getWhere($attributes, array $columns = ['*'])
     {
-        $res = $this->model->where($this->parseWhere($attributes))->get($columns);
-        $this->newModel();
-        return $res;
+        return $this->newQuery()
+            ->where($this->parseWhere($attributes))
+            ->get($columns);
     }
 
     /**
      * 分块处理
      * @method chunkById
      * @param array $attributes Where条件
-     * @param $count 每次获取$count条数据
+     * @param int $count 每次获取$count条数据
      * @param callable $callback 回调
      * @param null $column 字段
      * @param null $alias 表别名
@@ -183,9 +179,9 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function chunkById($attributes, $count, callable $callback, $column = null, $alias = null)
     {
-        $res = $this->model->where($this->parseWhere($attributes))->chunkById($count, $callback, $column, $alias);
-        $this->newModel();
-        return $res;
+        return $this->newQuery()
+            ->where($this->parseWhere($attributes))
+            ->chunkById($count, $callback, $column, $alias);
     }
 
     /**
@@ -202,9 +198,8 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function firstOrCreate($attributes, array $values = [])
     {
-        $res = $this->model->firstOrCreate($this->parseWhere($attributes), $values);
-        $this->newModel();
-        return $res;
+        return $this->newQuery()
+            ->firstOrCreate($this->parseWhere($attributes), $values);
     }
 
     /**
@@ -221,9 +216,8 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function updateOrCreate($attributes, array $values = [])
     {
-        $res = $this->model->updateOrCreate($this->parseWhere($attributes), $values);
-        $this->newModel();
-        return $res;
+        return $this->newQuery()
+            ->updateOrCreate($this->parseWhere($attributes), $values);
     }
 
     /**
@@ -243,9 +237,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function paginate($attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
-        $res = $this->model->where($this->parseWhere($attributes))->paginate($perPage, $columns, $pageName, $page);
-        $this->newModel();
-        return $res;
+        return $this->newQuery()->where($this->parseWhere($attributes))->paginate($perPage, $columns, $pageName, $page);
     }
 
     /**
@@ -265,9 +257,9 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function simplePaginate($attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
-        $res = $this->model->where($this->parseWhere($attributes))->select($columns)->simplePaginate($perPage);
-        $this->newModel();
-        return $res;
+        return $this->newQuery()
+            ->where($this->parseWhere($attributes))
+            ->select($columns)->simplePaginate($perPage);
     }
 
     /**
@@ -283,9 +275,9 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function limit($attributes, $perPage = null, $columns = ['*'])
     {
-        $res = $this->model->where($this->parseWhere($attributes))->select($columns)->limit($perPage)->get();
-        $this->newModel();
-        return $res;
+        return $this->newQuery()
+            ->where($this->parseWhere($attributes))
+            ->select($columns)->limit($perPage)->get();
     }
 
     /**
@@ -301,9 +293,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function create(array $attributes = [])
     {
-        $res = $this->model->create($this->parseWhere($attributes));
-        $this->newModel();
-        return $res;
+        return $this->getModel()->create($this->parseWhere($attributes));
     }
 
     /**
@@ -323,9 +313,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
         if (!empty($attributes)) {
             $model = $model->where($this->parseWhere($attributes));
         }
-
         $model->fill($values)->save(['touch' => false]);
-        $this->newModel();
         return $model;
     }
 
@@ -335,15 +323,16 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @param array $values
      * @param array $attributes
      *
-     * @return bool|void
+     * @return int
      *
      * @author luffyzhao@vip.126.com
      */
     public function updateWhere(array $values, array $attributes)
     {
-        $model = $this->model->newInstance();
-        $data = array_intersect_key($values, array_flip($this->model->getFillable()));
-        return $model->where($this->parseWhere($attributes))->update($data);
+        $data = array_intersect_key($values, array_flip($this->getModel()->getFillable()));
+        return $this->newQuery()
+            ->where($this->parseWhere($attributes))
+            ->update($data);
     }
 
     /**
@@ -359,23 +348,21 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function delete(Model $model)
     {
-        $res = $model->delete();
-        $this->newModel();
-        return $res;
+        return $model->delete();
     }
 
     /**
      * 通过查询删除模型
      * @method deleteWhere
      * @param array $attributes
-     * @return mixed|void
+     * @return mixed
      * @author luffyzhao@vip.126.com
      */
     public function deleteWhere($attributes)
     {
-        $res = $this->model->where($this->parseWhere($attributes))->delete();
-        $this->newModel();
-        return $res;
+        return $this->newQuery()
+            ->where($this->parseWhere($attributes))
+            ->delete();
     }
 
     /**
@@ -390,7 +377,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function make(array $with = array())
     {
-        $this->model = $this->model->with($with);
+        $this->newQuery()->with($with);
 
         return $this;
     }
@@ -419,9 +406,9 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     {
         foreach ($scope as $key => $value) {
             if (is_numeric($key)) {
-                $this->model = $this->model->{$value}();
+                $this->newQuery()->{$value}();
             } else {
-                $this->model = call_user_func_array([$this->model, $key], $value);
+                call_user_func_array([$this->newQuery(), $key], $value);
             }
         }
 
@@ -432,46 +419,66 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * join
      * @method join
      * @param array $relations
+     * @throws \Exception
      * @return $this
      * @author luffyzhao@vip.126.com
      */
     public function join(array $relations){
-        foreach ($relations AS $key=>$value){
-            $type = 'inner';
-            if(!is_numeric($key)){
-                $type = $value;
-                $value = $key;
+        foreach ($relations as $value){
+            if(is_string($value)){
+                $value = explode('.', $value);
             }
-            $relation = $this->getRelation($value);
-            if ($relation instanceof BelongsTo) {
-                $this->model = $this->model->join(
-                    $relation->getRelated()->getTable().$relation->getForeignKey(),
-                    $this->model->getTable().'.',
-                    '=',
-                    $relation->getRelated()->getTable().'.'.$relation->getOwnerKey(),
-                    $type
-                );
-            }else if($relation instanceof BelongsToMany) {
-                $this->model = $this->model->join(
-                    $relation->getRelated()->getTable(),
-                    $this->model->getTable().'.'.$relation->getOwnerKey(),
-                    '=',
-                    $relation->getRelated()->getTable().'.'.$relation->getForeignKey(),
-                    $type
-                );
-            }else if($relation instanceof  HasOne){
-                $this->model = $this->model->join(
-                    $relation->getRelated()->getTable(),
-                    $relation->getQualifiedParentKeyName(),
-                    '=',
-                    $relation->getExistenceCompareKey(),
-                    $type
-                );
-            }else{
-                throw new RelationNotFoundException( $value."  的关联类型不支付 join ");
-            }
+            $this->performJoin($value);
         }
         return $this;
+    }
+
+    /**
+     *
+     * @method performJoin
+     * @param $relations
+     * @throws RepoException
+     * @throws RepoException
+     * @author luffyzhao@vip.126.com
+     */
+    private function performJoin(array $relations)
+    {
+        $table = $this->getTable();
+        $primaryKey = $this->getModel()->getKeyName();
+
+        $currentModel = $this->getModel();
+        $currentPrimaryKey = $primaryKey;
+        $currentTable = $table;
+
+        foreach ($relations as $relation => $type) {
+            if(is_numeric($relation)){
+                $relation = $type;
+                $type = 'inner';
+            }
+            $relatedRelation = $currentModel->$relation();
+            $relatedModel = $relatedRelation->getRelated();
+            $relatedPrimaryKey = $relatedModel->getKeyName();
+            $relatedTable = $relatedModel->getTable();
+
+            if ($relatedRelation instanceof BelongsTo) {
+                $keyRelated = $relatedRelation->getForeignKey();
+                $this->newQuery()->join($relatedTable , function ($join) use ($relatedTable, $keyRelated, $currentTable, $relatedPrimaryKey, $relatedModel) {
+                    $join->on($relatedTable . '.' . $relatedPrimaryKey, '=', $currentTable . '.' . $keyRelated);
+                }, null, null, $type);
+            }else if($relatedRelation instanceof HasOne){
+                $keyRelated = $relatedRelation->getQualifiedForeignKeyName();
+                $keyRelated = last(explode('.', $keyRelated));
+                $this->newQuery()->join($relatedTable, function ($join) use ($relatedTable, $keyRelated, $currentTable, $relatedPrimaryKey, $relatedModel, $currentPrimaryKey) {
+                    $join->on($relatedTable . '.' . $keyRelated, '=', $currentTable . '.' . $currentPrimaryKey);
+                }, null, null, $type);
+            } else {
+                throw new RepoException('relations instanceof HasOne or BelongsTo');
+            }
+
+            $currentModel = $relatedModel;
+            $currentPrimaryKey = $relatedPrimaryKey;
+            $currentTable = $relatedTable;
+        }
     }
 
     /**
@@ -483,19 +490,5 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     protected function parseWhere($attributes){
         return $attributes instanceof Arrayable ? $attributes->toArray() : (array) $attributes;
-    }
-    /**
-     * getRelation
-     * @method getRelation
-     * @param $name
-     * @return mixed
-     * @author luffyzhao@vip.126.com
-     */
-    protected function getRelation($name){
-        if($this->model instanceof Model){
-            return $this->model->$name();
-        }else{
-            return $this->model->getModel()->$name();
-        }
     }
 }

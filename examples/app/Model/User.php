@@ -19,6 +19,20 @@ class User extends Authenticatable implements RedisTokeSubject
     public function order(){
         return $this->hasMany(Order::class, 'user_id', 'id');
     }
+
+    /**
+     * 一对
+     * @method role
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @author luffyzhao@vip.126.com
+     */
+    public function role(){
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+
+    public function one(){
+        return $this->hasOne(UserHasOne::class, 'user_id', 'id');
+    }
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *

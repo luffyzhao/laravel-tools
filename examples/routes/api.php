@@ -19,7 +19,7 @@ use Illuminate\Http\Request;
 
 Route::middleware('guest:api')->post('token', 'TokenController@store');
 
-Route::group(['middleware' => 'auth:api'], function($route){
+Route::group([], function($route){
     Route::delete('token', 'TokenController@destroy');
     Route::get('token', 'TokenController@show');
 

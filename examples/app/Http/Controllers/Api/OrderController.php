@@ -54,8 +54,22 @@ class OrderController extends Controller
      * @author luffyzhao@vip.126.com
      */
     public function repoJoin(){
+        $join = [
+            [
+                'user' => 'left',
+                'one' => 'inner'
+            ]
+        ];
+
+//        $join = ['user.one'];
+//
+//        $join = [
+//            [
+//                'user', 'one'
+//            ]
+//        ];
         return $this->respondWithSuccess(
-            $this->repo->join(['user'])->get(['*'])
+            $this->repo->with(['user'])->scope(['order'])->join($join)->get(['*'])
         );
     }
 
