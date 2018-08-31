@@ -510,6 +510,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
 
             if ($relatedRelation instanceof BelongsTo) {
                 $keyRelated = $relatedRelation->getForeignKey();
+                $relatedPrimaryKey = $relatedRelation->getOwnerKey();
                 $this->newQuery()->join(
                     $relatedTable,
                     function ($join) use (
