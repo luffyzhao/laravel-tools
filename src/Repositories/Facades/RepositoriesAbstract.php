@@ -4,18 +4,13 @@ namespace luffyzhao\laravelTools\Repositories\Facades;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\RelationNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Collection;
 use luffyzhao\laravelTools\Repositories\Exceptions\RepoException;
 
 abstract class RepositoriesAbstract implements RepositoryInterface
 {
     protected $model;
-
-    protected $query;
 
     /**
      * 获取Model.
@@ -40,11 +35,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function newQuery()
     {
-        if (!$this->query) {
-            $this->query = $this->model->newQuery();
-        }
-
-        return $this->query;
+        return $this->model->newQuery();
     }
 
     /**
@@ -66,19 +57,18 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @method find
      *
-     * @param int $id 主键ID
+     * @param  int|string $id 主键ID
      * @param array $columns 获取字段
      *
-     * @return Collection
+     * @return \Illuminate\Database\Eloquent\Model
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      *
      * @author luffyzhao@vip.126.com
      */
     public function find($id, array $columns = ['*'])
     {
-        $res = $this->newQuery()->findOrFail($id, $columns);
-        $this->query = null;
-
-        return $res;
+        return $this->newQuery()->findOrFail($id, $columns);
     }
 
     /**
@@ -89,14 +79,13 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @return \Illuminate\Database\Eloquent\Collection
      *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     *
      * @author luffyzhao@vip.126.com
      */
     public function findMany($ids, $columns = ['*'])
     {
-        $res = $this->newQuery()->findMany($ids, $columns);
-        $this->query = null;
-
-        return $res;
+        return $this->newQuery()->findMany($ids, $columns);
     }
 
     /**
@@ -107,18 +96,17 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @param array $attributes Where条件
      * @param array $columns 获取字段
      *
-     * @return \Illuminate\Database\Eloquent\Builder|Model
+     * @return \Illuminate\Database\Eloquent\Model
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      *
      * @author luffyzhao@vip.126.com
      */
-    public function findWhere($attributes, array $columns = ['*'])
+    public function findWhere(array $attributes, array $columns = ['*'])
     {
-        $res = $this->newQuery()
+        return $this->newQuery()
             ->where($this->parseWhere($attributes))
             ->firstOrFail($columns);
-        $this->query = null;
-
-        return $res;
     }
 
     /**
@@ -133,12 +121,11 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function findValue($attributes, string $columns)
+    public function findValue(array $attributes, string $columns)
     {
-        $res = $this->newQuery()->where($this->parseWhere($attributes))->value($columns);
-        $this->query = null;
-
-        return $res;
+        return $this->newQuery()->where(
+            $this->parseWhere($attributes)
+        )->value($columns);
     }
 
     /**
@@ -148,16 +135,13 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @param array $columns 获取字段
      *
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @return \Illuminate\Database\Eloquent\Collection
      *
      * @author luffyzhao@vip.126.com
      */
     public function get(array $columns)
     {
-        $res = $this->newQuery()->get($columns);
-        $this->query = null;
-
-        return $res;
+        return $this->newQuery()->get($columns);
     }
 
     /**
@@ -168,41 +152,37 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @param array $attributes Where条件
      * @param array $columns 获取字段
      *
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @return \Illuminate\Database\Eloquent\Collection
      *
      * @author luffyzhao@vip.126.com
      */
-    public function getWhere($attributes, array $columns = ['*'])
+    public function getWhere(array $attributes, array $columns = ['*'])
     {
-        $res = $this->newQuery()
-            ->where($this->parseWhere($attributes))
-            ->get($columns);
-        $this->query = null;
-
-        return $res;
+        return $this->newQuery()
+            ->where(
+                $this->parseWhere($attributes)
+            )->get($columns);
     }
 
     /**
      * 分块处理
      * @method chunkById
      * @param array $attributes Where条件
-     * @param int $count 每次获取$count条数据
+     * @param int $count 每次获取 $count 条数据
      * @param callable $callback 回调
-     * @param null $column 字段
-     * @param null $alias 表别名
+     * @param string $column 字段
+     * @param string|null $alias 表别名
      *
-     * @return mixed
+     * @return bool
      *
      * @author luffyzhao@vip.126.com
      */
-    public function chunkById($attributes, $count, callable $callback, $column = null, $alias = null)
+    public function chunkById(array $attributes, int $count, callable $callback, string $column = null, string $alias =
+    null)
     {
-        $res = $this->newQuery()
+        return $this->newQuery()
             ->where($this->parseWhere($attributes))
             ->chunkById($count, $callback, $column, $alias);
-        $this->query = null;
-
-        return $res;
     }
 
     /**
@@ -217,13 +197,10 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function firstOrCreate($attributes, array $values = [])
+    public function firstOrCreate(array $attributes, array $values = [])
     {
-        $res = $this->newQuery()
+        return $this->newQuery()
             ->firstOrCreate($this->parseWhere($attributes), $values);
-        $this->query = null;
-
-        return $res;
     }
 
     /**
@@ -238,13 +215,10 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function updateOrCreate($attributes, array $values = [])
+    public function updateOrCreate(array $attributes, array $values = [])
     {
-        $res = $this->newQuery()
+        return $this->newQuery()
             ->updateOrCreate($this->parseWhere($attributes), $values);
-        $this->query = null;
-
-        return $res;
     }
 
     /**
@@ -253,21 +227,18 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @method paginate
      *
      * @param array $attributes Where条件
-     * @param [type] $perPage    每页多少条
+     * @param int|null $perPage 每页多少条
      * @param array $columns 获取字段
      * @param string $pageName 分页input字段
-     * @param [type] $page       当前页码
-     *
+     * @param int|null $page
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      *
      * @author luffyzhao@vip.126.com
      */
-    public function paginate($attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
-    {
-        $res = $this->newQuery()->where($this->parseWhere($attributes))->paginate($perPage, $columns, $pageName, $page);
-        $this->query = null;
-
-        return $res;
+    public function paginate(array $attributes, int $perPage = null, array $columns = ['*'], $pageName = 'page', int $page = null) {
+        return $this->newQuery()->where(
+            $this->parseWhere($attributes)
+        )->paginate($perPage, $columns, $pageName, $page);
     }
 
     /**
@@ -276,7 +247,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @method simplePaginate
      *
      * @param array $attributes Where条件
-     * @param null $perPage
+     * @param int $perPage
      * @param array $columns 获取字段
      *
      * @param string $pageName
@@ -285,35 +256,28 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function simplePaginate($attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
-    {
-        $res = $this->newQuery()
+    public function simplePaginate(array $attributes, int $perPage = null, $columns = ['*'], $pageName = 'page', $page = null) {
+        return $this->newQuery()
             ->where($this->parseWhere($attributes))
             ->select($columns)->simplePaginate($perPage);
-        $this->query = null;
-
-        return $res;
     }
 
     /**
      * 查找与属性匹配的记录
      * @method limit
      * @param array $attributes
-     * @param null $perPage
+     * @param int $perPage
      * @param array $columns
      *
      * @return mixed
      *
      * @author luffyzhao@vip.126.com
      */
-    public function limit($attributes, $perPage = null, $columns = ['*'])
+    public function limit(array $attributes, int $perPage = null, array $columns = ['*'])
     {
-        $res = $this->newQuery()
+        return $this->newQuery()
             ->where($this->parseWhere($attributes))
             ->select($columns)->limit($perPage)->get();
-        $this->query = null;
-
-        return $res;
     }
 
     /**
@@ -323,16 +287,19 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @param array $attributes 属性
      *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Illuminate\Database\Eloquent\Model|bool
      *
      * @author luffyzhao@vip.126.com
      */
     public function create(array $attributes = [])
     {
-        $res = $this->getModel()->create($this->parseWhere($attributes));
-        $this->query = null;
+        $model = $this->getModel();
+        $res = $model->fill($attributes)->save();
 
-        return $res;
+        if($res){
+            return $model;
+        }
+        return false;
     }
 
     /**
@@ -341,19 +308,13 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      *
      * @param Model $model
      * @param array $values
-     *
-     * @param array $attributes
-     * @return Model
+     * @return Model | bool
      *
      * @author luffyzhao@vip.126.com
      */
-    public function update(Model $model, array $values, array $attributes = [])
+    public function update(Model $model, array $values)
     {
-        if (!empty($attributes)) {
-            $model = $this->newQuery()->where($this->parseWhere($attributes));
-        }
-        $model->fill($values)->save(['touch' => false]);
-        $this->query = null;
+        $model->fill($values)->save();
 
         return $model;
     }
@@ -372,12 +333,9 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     {
         $data = array_intersect_key($values, array_flip($this->getModel()->getFillable()));
 
-        $res = $this->newQuery()
+        return $this->newQuery()
             ->where($this->parseWhere($attributes))
             ->update($data);
-        $this->query = null;
-
-        return $res;
     }
 
     /**
@@ -403,7 +361,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @return mixed
      * @author luffyzhao@vip.126.com
      */
-    public function deleteWhere($attributes)
+    public function deleteWhere(array $attributes)
     {
         return $this->newQuery()
             ->where($this->parseWhere($attributes))

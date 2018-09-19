@@ -33,10 +33,12 @@ interface RepositoryInterface
      *
      * @method find
      *
-     * @param int   $id      主键ID
+     * @param  int|string $id 主键ID
      * @param array $columns 获取字段
      *
-     * @return Illuminate\Support\Collection|static|null
+     * @return \Illuminate\Database\Eloquent\Model
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      *
      * @author luffyzhao@vip.126.com
      */
@@ -50,6 +52,8 @@ interface RepositoryInterface
      *
      * @return \Illuminate\Database\Eloquent\Collection
      *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     *
      * @author luffyzhao@vip.126.com
      */
     public function findMany($ids, $columns = ['*']);
@@ -62,11 +66,13 @@ interface RepositoryInterface
      * @param array $attributes Where条件
      * @param array $columns    获取字段
      *
-     * @return Illuminate\Support\Collection|static|null
+     * @return \Illuminate\Database\Eloquent\Model
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      *
      * @author luffyzhao@vip.126.com
      */
-    public function findWhere($attributes, array $columns = ['*']);
+    public function findWhere(array $attributes, array $columns = ['*']);
 
     /**
      * 从查询的第一个结果获取单个列的值。
@@ -80,7 +86,7 @@ interface RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function findValue($attributes, string $columns);
+    public function findValue(array $attributes, string $columns);
 
     /**
      * 获取全部模型.
@@ -89,7 +95,7 @@ interface RepositoryInterface
      *
      * @param array $columns 获取字段
      *
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @return \Illuminate\Database\Eloquent\Collection
      *
      * @author luffyzhao@vip.126.com
      */
@@ -103,26 +109,29 @@ interface RepositoryInterface
      * @param array $attributes Where条件
      * @param array $columns    获取字段
      *
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @return \Illuminate\Database\Eloquent\Collection
      *
      * @author luffyzhao@vip.126.com
      */
-    public function getWhere($attributes, array $columns = ['*']);
+    public function getWhere(array $attributes, array $columns = ['*']);
 
     /**
      * 分块处理
-     * @method chunkById
-     * @param array $attributes Where条件
-     * @param $count 每次获取$count条数据
-     * @param callable $callback 回调
-     * @param null $column 字段
-     * @param null $alias 表别名
      *
-     * @return mixed
+     * @method chunkById
+     *
+     * @param array $attributes Where条件
+     * @param int $count 每次获取 $count 条数据
+     * @param callable $callback 回调
+     * @param string | null $column 字段
+     * @param string | null $alias 表别名
+     *
+     * @return bool
      *
      * @author luffyzhao@vip.126.com
      */
-    public function chunkById($attributes, $count, callable $callback, $column = null, $alias = null);
+    public function chunkById(array $attributes, int $count, callable $callback, string $column = null, string $alias
+    = null);
 
     /**
      * 获取与属性匹配的第一个记录不存在就创建。
@@ -136,7 +145,7 @@ interface RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function firstOrCreate($attributes, array $values = []);
+    public function firstOrCreate(array $attributes, array $values = []);
 
     /**
      * 修改与属性匹配的记录不存在就创建。
@@ -150,24 +159,24 @@ interface RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function updateOrCreate($attributes, array $values = []);
+    public function updateOrCreate(array $attributes, array $values = []);
 
     /**
      * 查找与属性匹配的记录并分页.
      *
      * @method paginate
      *
-     * @param array  $attributes Where条件
-     * @param [type] $perPage    每页多少条
-     * @param array  $columns    获取字段
-     * @param string $pageName   分页input字段
-     * @param [type] $page       当前页码
-     *
+     * @param array $attributes Where条件
+     * @param int|null $perPage
+     * @param array $columns 获取字段
+     * @param string $pageName 分页input字段
+     * @param int|null $page
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      *
      * @author luffyzhao@vip.126.com
      */
-    public function paginate($attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null);
+    public function paginate(array $attributes, int $perPage = null, array $columns = ['*'], $pageName = 'page',
+        int $page = null);
 
     /**
      * 查找与属性匹配的记录并分页.（简单版）.
@@ -175,7 +184,7 @@ interface RepositoryInterface
      * @method simplePaginate
      *
      * @param array $attributes Where条件
-     * @param null $perPage
+     * @param int|null $perPage
      * @param array $columns 获取字段
      *
      * @param string $pageName
@@ -184,7 +193,8 @@ interface RepositoryInterface
      *
      * @author luffyzhao@vip.126.com
      */
-    public function simplePaginate($attributes, $perPage = null, $columns = ['*'], $pageName = 'page', $page = null);
+    public function simplePaginate(array $attributes, int $perPage = null, $columns = ['*'], $pageName = 'page',
+        $page = null);
 
     /**
      * 创建模型.
@@ -193,7 +203,7 @@ interface RepositoryInterface
      *
      * @param array $attributes 属性
      *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Illuminate\Database\Eloquent\Model|bool
      *
      * @author luffyzhao@vip.126.com
      */
@@ -203,14 +213,14 @@ interface RepositoryInterface
      * 查找与属性匹配的记录
      * @method limit
      * @param array $attributes
-     * @param null $perPage
+     * @param int|null $perPage
      * @param array $columns
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Collection
      *
      * @author luffyzhao@vip.126.com
      */
-    public function limit($attributes, $perPage = null, $columns = ['*']);
+    public function limit(array $attributes, int $perPage = null, array $columns = ['*']);
 
     /**
      * 更新模型.
@@ -220,12 +230,11 @@ interface RepositoryInterface
      * @param Model $model
      *
      * @param array $values 更新数据
-     * @param array $attributes
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Illuminate\Database\Eloquent\Model | bool
      *
      * @author luffyzhao@vip.126.com
      */
-    public function update(Model $model, array $values, array $attributes = []);
+    public function update(Model $model, array $values);
 
     /**
      * 根据条件更新
@@ -233,7 +242,7 @@ interface RepositoryInterface
      * @param array $values
      * @param array $attributes
      *
-     * @return boolean
+     * @return bool
      *
      * @author luffyzhao@vip.126.com
      */
@@ -246,7 +255,7 @@ interface RepositoryInterface
      *
      * @param Model $model 删除模型
      *
-     * @return mixed
+     * @return bool
      *
      * @author luffyzhao@vip.126.com
      */
@@ -256,14 +265,16 @@ interface RepositoryInterface
      * 通过查询删除模型
      * @method deleteWhere
      * @param array $attributes
-     * @return mixed
+     * @return bool
      * @author luffyzhao@vip.126.com
      */
-    public function deleteWhere($attributes);
+    public function deleteWhere(array $attributes);
     /**
      * 使实体的一个新实例查询。
      *
      * @param array $with
+     *
+     * @return self
      */
     public function make(array $with = array());
 
@@ -271,10 +282,11 @@ interface RepositoryInterface
      * make别名
      * @method with
      * @param array $with
-     * @return mixed
+     * @return self
      * @author luffyzhao@vip.126.com
      */
     public function with(array $with = array());
+
     /**
      * 添加一个获取多个作用域
      *
@@ -282,7 +294,7 @@ interface RepositoryInterface
      *
      * @param array $scope [description]
      *
-     * @return [type] [description]
+     * @return self
      *
      * @author luffyzhao@vip.126.com
      */
@@ -292,7 +304,7 @@ interface RepositoryInterface
      *
      * @method join
      * @param array $relations
-     * @return mixed
+     * @return self
      * @author luffyzhao@vip.126.com
      */
     public function join(array $relations);
