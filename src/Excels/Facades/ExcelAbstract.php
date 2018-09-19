@@ -2,12 +2,12 @@
 
 namespace luffyzhao\laravelTools\Excels\Facades;
 
-use luffyzhao\laravelTools\Excels\Exceptions\ExcelsException;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use luffyzhao\laravelTools\Repositories\Facades\RepositoryInterface;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Illuminate\Support\Collection;
 
 
 abstract class ExcelAbstract implements FromCollection, WithMapping, WithHeadings
@@ -29,14 +29,13 @@ abstract class ExcelAbstract implements FromCollection, WithMapping, WithHeading
      * @method collection
      *
      * @return \Illuminate\Support\Collection
-     * @throws ExcelsException
      *
      * @author luffyzhao@vip.126.com
      */
     public function collection()
     {
         $collection = collect([]);
-        $this->repo->chunkById($this->getAttributes(), $this->getChunkCount(), function ($resules) use (&$collection){
+        $this->repo->chunkById($this->getAttributes(), $this->getChunkCount(), function (Collection $resules) use (&$collection){
             $collection = $resules->merge($collection);
         }, $this->getChunkColumn(), $this->getChunkAlias());
 

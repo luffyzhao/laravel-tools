@@ -14,15 +14,6 @@ use Illuminate\Support\Facades\Log;
 
 class QueryListeners
 {
-    /**
-     * 创建事件监听器.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
 
     public function handle(QueryExecuted $queryExecuted){
         Log::info($this->sqlBindings($queryExecuted));
@@ -50,9 +41,10 @@ class QueryListeners
         }
         $query = str_replace(array('%', '?'), array('%%', '%s'), $queryExecuted->sql);
 
-        $sql =  vsprintf($query, $queryExecuted->bindings);
-
-        return '['.$queryExecuted->connectionName.']  ' . $sql . '  ' . $queryExecuted->time;
+        return vsprintf("[ SQL ] [ Driver: %s] %s [ RunTime: %u ms]", [
+            $queryExecuted->connectionName,
+            vsprintf($query, $queryExecuted->bindings),
+            $queryExecuted->time]);
     }
 
 }

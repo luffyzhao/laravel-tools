@@ -58,7 +58,6 @@ class Md5Sign extends CoreSign
      */
     private function getSignKey(): string
     {
-        return Config::get('app.sign_key', 'Q1/bJIBw35vq3RUmXfespleZkfIiA2nKD8JXIdCwiBY=');
-//        return 'Q1/bJIBw35vq3RUmXfespleZkfIiA2nKD8JXIdCwiBY=';
+        return Config::get('sign.md5_key', '');
     }
 }

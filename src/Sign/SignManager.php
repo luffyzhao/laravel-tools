@@ -16,12 +16,13 @@ class SignManager
      *
      * @method sign
      *
-     * @param Request $request  [description]
-     * @param string  $signType [description]
+     * @param Request $request [description]
+     * @param string $signType [description]
      *
      * @return array [description]
      *
      * @author luffyzhao@vip.126.com
+     * @throws SignException
      */
     public function sign(Request $request, $signType = 'rsa'): array
     {
@@ -45,6 +46,7 @@ class SignManager
      * @return bool [description]
      *
      * @author luffyzhao@vip.126.com
+     * @throws SignException
      */
     public function validate(Request $request): bool
     {
@@ -65,6 +67,7 @@ class SignManager
      * @return array [description]
      *
      * @author luffyzhao@vip.126.com
+     * @throws SignException
      */
     protected function validateParams(Request $request): array
     {
@@ -99,7 +102,8 @@ class SignManager
      */
     protected function validateTimestamp($timestamp)
     {
-        return !empty($timestamp) && Carbon::parse($timestamp)->diffInRealSeconds() < Config::get('app.sign_time_out', 60);
+        return !empty($timestamp) && Carbon::parse($timestamp)->diffInRealSeconds() < Config::get('sign.time_out',
+                60);
     }
 
     /**

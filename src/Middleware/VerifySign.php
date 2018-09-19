@@ -15,7 +15,15 @@ use luffyzhao\laravelTools\Support\Facades\Sign;
 
 class VerifySign
 {
-    public function handle(Request $request, Closure $next, $guard = null)
+    /**
+     * handle
+     * @param Request $request
+     * @param Closure $next
+     * @return mixed
+     * @throws SignException
+     * @author luffyzhao@vip.126.com
+     */
+    public function handle(Request $request, Closure $next)
     {
         if (!Sign::validate($request)) {
             throw new SignException('sign not true');

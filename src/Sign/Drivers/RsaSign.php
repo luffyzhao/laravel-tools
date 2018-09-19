@@ -63,12 +63,8 @@ class RsaSign extends CoreSign
     private function getPrivateKey(): string
     {
         return file_get_contents(
-            Config::get('app.sign_rsa_private_key', __DIR__.'/../key/rsa_private_key.pem')
+            Config::get('sign.rsa_private_key', __DIR__.'/../key/rsa_private_key.pem')
         );
-
-//        return file_get_contents(
-//            __DIR__ . '/../key/rsa_private_key.pem'
-//        );
     }
 
     /**
@@ -83,11 +79,7 @@ class RsaSign extends CoreSign
     private function getPublicKey(): string
     {
         return file_get_contents(
-            Config::get('app.sign_rsa_public_key', __DIR__.'/../key/rsa_public_key.pem')
+            Config::get('sign.rsa_public_key', __DIR__.'/../key/rsa_public_key.pem')
         );
-
-//        return file_get_contents(
-//            __DIR__ . '/../key/rsa_public_key.pem'
-//        );
     }
 }

@@ -45,7 +45,7 @@ class MakeExcels extends GeneratorCommand
      *
      * @method getStub
      *
-     * @return [type] [description]
+     * @return string stub模板路径
      *
      * @author luffyzhao@vip.126.com
      */
