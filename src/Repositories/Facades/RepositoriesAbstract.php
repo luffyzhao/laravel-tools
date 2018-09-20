@@ -3,6 +3,7 @@
 namespace luffyzhao\laravelTools\Repositories\Facades;
 
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -10,7 +11,16 @@ use luffyzhao\laravelTools\Repositories\Exceptions\RepoException;
 
 abstract class RepositoriesAbstract implements RepositoryInterface
 {
+    /**
+     * @var Model
+     */
     protected $model;
+
+
+    /**
+     * @var null|Builder
+     */
+    protected $query;
 
     /**
      * 获取Model.
@@ -26,17 +36,21 @@ abstract class RepositoriesAbstract implements RepositoryInterface
         return $this->model;
     }
 
-
     /**
-     * Create a new instance of the given model.
-     * @method newQuery
-     * @return \Illuminate\Database\Eloquent\Builder
-     * @author luffyzhao@vip.126.com
+     * @return Builder|null
      */
-    public function newQuery()
-    {
-        return $this->model->newQuery();
+    protected function getQuery($replace = false){
+        if(!$this->query){
+            $this->query = $this->getModel()->newQuery();
+        }
+        if($replace){
+            $query = $this->query;
+            $this->query = null;
+            return $query;
+        }
+        return $this->query;
     }
+
 
     /**
      * 获取数据表名.
@@ -68,7 +82,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function find($id, array $columns = ['*'])
     {
-        return $this->newQuery()->findOrFail($id, $columns);
+        return $this->getQuery(true)->findOrFail($id, $columns);
     }
 
     /**
@@ -85,7 +99,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function findMany($ids, $columns = ['*'])
     {
-        return $this->newQuery()->findMany($ids, $columns);
+        return $this->getQuery(true)->findMany($ids, $columns);
     }
 
     /**
@@ -104,7 +118,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function findWhere(array $attributes, array $columns = ['*'])
     {
-        return $this->newQuery()
+        return $this->getQuery(true)
             ->where($this->parseWhere($attributes))
             ->firstOrFail($columns);
     }
@@ -123,7 +137,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function findValue(array $attributes, string $columns)
     {
-        return $this->newQuery()->where(
+        return $this->getQuery(true)->where(
             $this->parseWhere($attributes)
         )->value($columns);
     }
@@ -141,7 +155,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function get(array $columns)
     {
-        return $this->newQuery()->get($columns);
+        return $this->getQuery(true)->get($columns);
     }
 
     /**
@@ -158,7 +172,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function getWhere(array $attributes, array $columns = ['*'])
     {
-        return $this->newQuery()
+        return $this->getQuery(true)
             ->where(
                 $this->parseWhere($attributes)
             )->get($columns);
@@ -180,7 +194,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     public function chunkById(array $attributes, int $count, callable $callback, string $column = null, string $alias =
     null)
     {
-        return $this->newQuery()
+        return $this->getQuery(true)
             ->where($this->parseWhere($attributes))
             ->chunkById($count, $callback, $column, $alias);
     }
@@ -199,7 +213,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function firstOrCreate(array $attributes, array $values = [])
     {
-        return $this->newQuery()
+        return $this->getQuery(true)
             ->firstOrCreate($this->parseWhere($attributes), $values);
     }
 
@@ -217,7 +231,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function updateOrCreate(array $attributes, array $values = [])
     {
-        return $this->newQuery()
+        return $this->getQuery(true)
             ->updateOrCreate($this->parseWhere($attributes), $values);
     }
 
@@ -236,7 +250,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @author luffyzhao@vip.126.com
      */
     public function paginate(array $attributes, int $perPage = null, array $columns = ['*'], $pageName = 'page', int $page = null) {
-        return $this->newQuery()->where(
+        return $this->getQuery(true)->where(
             $this->parseWhere($attributes)
         )->paginate($perPage, $columns, $pageName, $page);
     }
@@ -257,7 +271,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      * @author luffyzhao@vip.126.com
      */
     public function simplePaginate(array $attributes, int $perPage = null, $columns = ['*'], $pageName = 'page', $page = null) {
-        return $this->newQuery()
+        return $this->getQuery(true)
             ->where($this->parseWhere($attributes))
             ->select($columns)->simplePaginate($perPage);
     }
@@ -275,7 +289,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function limit(array $attributes, int $perPage = null, array $columns = ['*'])
     {
-        return $this->newQuery()
+        return $this->getQuery(true)
             ->where($this->parseWhere($attributes))
             ->select($columns)->limit($perPage)->get();
     }
@@ -333,7 +347,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     {
         $data = array_intersect_key($values, array_flip($this->getModel()->getFillable()));
 
-        return $this->newQuery()
+        return $this->getQuery(true)
             ->where($this->parseWhere($attributes))
             ->update($data);
     }
@@ -363,7 +377,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function deleteWhere(array $attributes)
     {
-        return $this->newQuery()
+        return $this->getQuery(true)
             ->where($this->parseWhere($attributes))
             ->delete();
     }
@@ -380,7 +394,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
      */
     public function make(array $with = array())
     {
-        $this->newQuery()->with($with);
+        $this->getQuery()->with($with);
 
         return $this;
     }
@@ -410,9 +424,9 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     {
         foreach ($scope as $key => $value) {
             if (is_numeric($key)) {
-                $this->newQuery()->{$value}();
+                $this->getQuery()->{$value}();
             } else {
-                call_user_func_array([$this->newQuery(), $key], $value);
+                call_user_func_array([$this->getQuery(), $key], $value);
             }
         }
 
@@ -469,7 +483,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
             if ($relatedRelation instanceof BelongsTo) {
                 $keyRelated = $relatedRelation->getForeignKey();
                 $relatedPrimaryKey = $relatedRelation->getOwnerKey();
-                $this->newQuery()->join(
+                $this->getQuery()->join(
                     $relatedTable,
                     function ($join) use (
                         $relatedTable,
@@ -488,7 +502,7 @@ abstract class RepositoriesAbstract implements RepositoryInterface
                 if ($relatedRelation instanceof HasOne) {
                     $keyRelated = $relatedRelation->getQualifiedForeignKeyName();
                     $keyRelated = last(explode('.', $keyRelated));
-                    $this->newQuery()->join(
+                    $this->getQuery()->join(
                         $relatedTable,
                         function ($join) use (
                             $relatedTable,
