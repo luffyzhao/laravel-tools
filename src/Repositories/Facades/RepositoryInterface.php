@@ -288,6 +288,12 @@ interface RepositoryInterface
     public function with(array $with = array());
 
     /**
+     * @param array $with
+     * @return mixed
+     */
+    public function withCount(array $with = array());
+
+    /**
      * 添加一个获取多个作用域
      *
      * @method scope

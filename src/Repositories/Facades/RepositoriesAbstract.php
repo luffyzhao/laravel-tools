@@ -412,6 +412,16 @@ abstract class RepositoriesAbstract implements RepositoryInterface
     }
 
     /**
+     * @param array $with
+     * @return $this
+     */
+    public function withCount(array $with = array()){
+        $this->getQuery()->withCount($with);
+
+        return $this;
+    }
+
+    /**
      * 添加一个获取多个作用域
      * @method scope
      *

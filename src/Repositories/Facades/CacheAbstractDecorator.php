@@ -510,6 +510,17 @@ abstract class CacheAbstractDecorator implements RepositoryInterface
     }
 
     /**
+     * @param array $with
+     * @return $this|mixed
+     */
+    public function withCount(array $with = array())
+    {
+        $this->repo = $this->repo->withCount($with);
+
+        return $this;
+    }
+
+    /**
      * 添加一个获取多个作用域
      * @method scope
      * @param array $scope
