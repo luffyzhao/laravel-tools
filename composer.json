@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "luffyzhao\\laravelTools\\": "src/"
+            "LTools\\": "src/"
         }
     },
     "authors": [
