@@ -9,7 +9,10 @@
         "lcobucci/jwt": "^3.2",
         "namshi/jose": "^7.0",
         "nesbot/carbon": "^1.0",
-        "maatwebsite/excel": "^3.0"
+        "maatwebsite/excel": "^3.0",
+        "ext-openssl": "*",
+        "ext-http": "*",
+        "ext-json": "*"
     },
     "require-dev": {
         "cartalyst/sentinel": "2.0.*",

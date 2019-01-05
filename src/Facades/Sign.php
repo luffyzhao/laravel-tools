@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static \LTools\Sign\SignManager
- * @method static sign(\Illuminate\Http\Request $request, $signType = 'md5') : array
- * @method static validate(\Illuminate\Http\Request $request) : bool
+ * @method static sign($signType = 'md5') : array
+ * @method static validate(array $data) : bool
  *
  * @see \LTools\Sign\SignManager
  *
