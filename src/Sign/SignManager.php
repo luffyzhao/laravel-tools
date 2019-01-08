@@ -94,7 +94,7 @@ class SignManager
         return !empty($timestamp)
             && Carbon::createFromTimestamp($timestamp)->diffInRealSeconds()
             <= (int)Config::get(
-                'sign.time_out',
+                'ltool.sign.time_out',
                 60
             );
     }

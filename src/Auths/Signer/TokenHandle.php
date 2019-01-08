@@ -10,8 +10,10 @@ namespace LTools\Auths\Signer;
 
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use Lcobucci\JWT\Builder;
+use LTools\Contracts\Signer\SignerInterface;
 
 class TokenHandle
 {
@@ -43,32 +45,43 @@ class TokenHandle
      * @author luffyzhao@vip.126.com
      */
     protected $request;
+    /**
+     * @var Builder
+     */
+    private $builder;
 
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, Builder $builder)
     {
         $this->request = $request;
+        $this->builder = $builder;
     }
 
     /**
      * 设置token
      * @method setIdentifier
      *
-     * @param $id
+     * @param SignerInterface $user
      *
      * @return bool|string
      * @author luffyzhao@vip.126.com
      */
-    public function setIdentifier($id)
+    public function fromUser(SignerInterface $user)
     {
         $code = Str::random(5);
-        $encrypt = encrypt([
-            'key' => $id,
-            'code' => $code,
-            'exp' => $this->expired
-        ]);
+        $now = time();
 
-        
+        if($user->saveSignerCode($code)){
+            return $this->builder
+                ->setIssuer(Config::get('app.url'))
+                ->setId(Str::random(12), true)
+                ->setIssuedAt($now)
+                ->setNotBefore($now + Config::get('ltool.signer.nbf'))
+                ->setExpiration($now + Config::get('ltool.signer.exp'))
+                ->set('id', $user->getAuthIdentifier())
+                ->set('code', $code)
+                ->getToken();
+        }
     }
 
     /**

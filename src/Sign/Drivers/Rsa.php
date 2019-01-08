@@ -10,6 +10,7 @@ namespace LTools\Sign\Drivers;
 
 
 use Illuminate\Support\Facades\Config;
+use LTools\Exceptions\SignException;
 use LTools\Sign\SignAbstract;
 
 class Rsa extends SignAbstract
@@ -66,13 +67,20 @@ class Rsa extends SignAbstract
      * @return string
      *
      * @author luffyzhao@vip.126.com
+     * @throws SignException
      */
     private function getPrivateKey(): string
     {
+        if (Config::get(
+            'ltool.sign.rsa_private_key'
+        )
+        ) {
+            throw new SignException('rsa_private_key is not config!');
+        }
+
         return file_get_contents(
             Config::get(
-                'sign.rsa_private_key',
-                __DIR__.'/../pem/rsa_private_key.pem'
+                'ltool.sign.rsa_private_key'
             )
         );
     }
@@ -85,13 +93,20 @@ class Rsa extends SignAbstract
      * @return string
      *
      * @author luffyzhao@vip.126.com
+     * @throws SignException
      */
     private function getPublicKey(): string
     {
+        if (Config::get(
+            'ltool.sign.rsa_public_key'
+        )
+        ) {
+            throw new SignException('rsa_public_key is not config!');
+        }
+
         return file_get_contents(
             Config::get(
-                'sign.rsa_public_key',
-                __DIR__.'/../pem/rsa_public_key.pem'
+                'ltool.sign.rsa_public_key'
             )
         );
     }

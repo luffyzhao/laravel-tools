@@ -58,6 +58,6 @@ class Md5 extends SignAbstract implements SignDriverInterface
 
     private function getSignKey(): string
     {
-        return Config::get('sign.md5_key', '');
+        return Config::get('ltool.sign.sign_key', '');
     }
 }
