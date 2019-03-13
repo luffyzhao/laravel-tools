@@ -67,11 +67,11 @@ abstract class RepositoryAbstract
      *
      * @method paginate
      *
-     * @param array    $attributes Where条件
-     * @param int|null $perPage    每页多少条
-     * @param array    $columns    获取字段
-     * @param string   $pageName   分页input字段
-     * @param int|null $page
+     * @param array $attributes Where条件
+     * @param int $perPage 每页多少条
+     * @param array $columns 获取字段
+     * @param string $pageName 分页input字段
+     * @param int $page
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      *
