@@ -10,6 +10,7 @@ namespace LTools\Searchs;
 
 
 use ArrayAccess;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use LTools\Contracts\Search\SearchInterface;
 use LTools\Exceptions\SearchException;
@@ -102,9 +103,9 @@ abstract class SearchAbstract implements SearchInterface
      * 构造函数
      * SearchAbstract constructor.
      *
-     * @param ArrayAccess $attributes
+     * @param Request $attributes
      */
-    public function __construct(ArrayAccess $attributes)
+    public function __construct(Request $attributes)
     {
         $this->attributes = $attributes;
     }
