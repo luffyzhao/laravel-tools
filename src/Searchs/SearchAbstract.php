@@ -121,7 +121,7 @@ abstract class SearchAbstract implements SearchInterface
     {
         $attributes = [];
         $relationship = $this->relationship();
-        if (empty($relationship)) {
+        if (!empty($relationship)) {
             foreach ($relationship as $column => $operator) {
                 if ($this->attributes->offsetExists($column)) {
                     $default = $this->attributes->offsetGet($column);
