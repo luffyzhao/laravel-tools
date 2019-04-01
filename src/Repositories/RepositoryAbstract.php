@@ -19,13 +19,6 @@ abstract class RepositoryAbstract
 
 
     /**
-     * RepositoryAbstract constructor.
-     *
-     * @param Model $model
-     */
-    abstract public function __construct($model);
-
-    /**
      * 通过主键查找一个模型.
      *
      * @method find
