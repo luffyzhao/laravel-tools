@@ -10,10 +10,10 @@ namespace LTools\Auths\Signer;
 
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
-use Lcobucci\JWT\Builder;
 use LTools\Contracts\Signer\SignerInterface;
+use Illuminate\Support\Facades\Crypt;
 
 class TokenHandle
 {
@@ -25,36 +25,15 @@ class TokenHandle
     protected $header = 'authorization';
 
     /**
-     * 过期时间
-     *
-     * @var int
-     * @author luffyzhao@vip.126.com
-     */
-    protected $expired = 3600;
-
-    /**
-     * 生命周期
-     *
-     * @var int
-     * @author luffyzhao@vip.126.com
-     */
-    protected $ttl = 0;
-
-    /**
      * @var Request
      * @author luffyzhao@vip.126.com
      */
     protected $request;
-    /**
-     * @var Builder
-     */
-    private $builder;
 
 
-    public function __construct(Request $request, Builder $builder)
+    public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->builder = $builder;
     }
 
     /**
@@ -66,99 +45,40 @@ class TokenHandle
      * @return bool|string
      * @author luffyzhao@vip.126.com
      */
-    public function fromUser(SignerInterface $user)
+    public function generate(SignerInterface $user): string
     {
-        $code = Str::random(5);
-        $now = time();
-
-        if($user->saveSignerCode($code)){
-            return $this->builder
-                ->setIssuer(Config::get('app.url'))
-                ->setId(Str::random(12), true)
-                ->setIssuedAt($now)
-                ->setNotBefore($now + Config::get('ltool.signer.nbf'))
-                ->setExpiration($now + Config::get('ltool.signer.exp'))
-                ->set('id', $user->getAuthIdentifier())
-                ->set('code', $code)
-                ->getToken();
-        }
+        return $this->tokenString($user);
     }
 
+
     /**
-     * 尝试从请求头解析token
-     * @method parse
-     *
-     * @return mixed
+     * tokenString
+     * @param SignerInterface $user
      * @author luffyzhao@vip.126.com
-     */
-    protected function parse()
-    {
-        return $this->request->headers->get($this->header)
-            ?: $this->fromAltHeaders();
-    }
-
-    /**
-     * 试图从某些其他可能的报头解析 token
-     * @method fromAltHeaders
-     *
-     * @return mixed
-     * @author luffyzhao@vip.126.com
-     */
-    protected function fromAltHeaders()
-    {
-        return $this->request->server->get('HTTP_AUTHORIZATION')
-            ?: $this->request->server->get(
-                'REDIRECT_HTTP_AUTHORIZATION'
-            );
-    }
-
-    /**
      * @return string
      */
-    public function getHeader(): string
+    protected function tokenString(SignerInterface $user): string
     {
-        return $this->header;
+
+        $code = $this->getRedisString();
+
+        Redis::hset('token:user', $user->getAuthIdentifier(), $code);
+
+        return Crypt::encrypt([
+            'id' => $user->getAuthIdentifier(),
+            'code' => $code,
+            'time' => time()
+        ]);
     }
 
     /**
-     * @param string $header
+     * generateTokenString
+     * @author luffyzhao@vip.126.com
+     * @return string
      */
-    public function setHeader(string $header)
+    private function getRedisString(): string
     {
-        $this->header = $header;
+        return Str::random(16);
     }
-
-    /**
-     * @return int
-     */
-    public function getExpired(): int
-    {
-        return $this->expired;
-    }
-
-    /**
-     * @param int $expired
-     */
-    public function setExpired(int $expired)
-    {
-        $this->expired = $expired;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTtl(): int
-    {
-        return $this->ttl;
-    }
-
-    /**
-     * @param int $ttl
-     */
-    public function setTtl(int $ttl)
-    {
-        $this->ttl = $ttl;
-    }
-
 
 }

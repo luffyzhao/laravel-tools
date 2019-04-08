@@ -10,9 +10,9 @@ namespace LTools\Auths\Signer;
 
 
 use Illuminate\Auth\GuardHelpers;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
-use LTools\Contracts\Signer\SignerInterface;
 
 class SignerGuard implements Guard
 {
@@ -90,13 +90,13 @@ class SignerGuard implements Guard
     }
 
     /**
-     * @param SignerInterface $user
+     * @param Authenticatable $user
      *
      * @return bool|string
      */
-    public function login(SignerInterface $user)
+    public function login(Authenticatable $user)
     {
-        $token = $this->handle->fromUser($user);
+        $token = $this->handle->generate($user);
         $this->setUser($user);
 
         return $token;

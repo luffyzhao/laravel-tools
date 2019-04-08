@@ -11,7 +11,5 @@ namespace LTools\Contracts\Signer;
 
 interface SignerInterface
 {
-    public function getSignerIdentifier();
-
-    public function saveSignerCode($code);
+    public function getAuthIdentifier();
 }
