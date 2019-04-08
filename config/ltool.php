@@ -11,9 +11,13 @@ return [
         'rsa_public_key' => env('LTOOL_SIGN_RSA_PUBLIC', __DIR__.'/../pems/rsa_public_key.pem'),
     ],
 
-    // jwt验证
-    'signer' => [
-        'nbf' => 0,
-        'exp' => 3600
+    // token-cache验证
+    'token-cache' => [
+        // 缓存key前缀
+        'key_prefix' => 'token:cache:',
+        // 有效时间
+        'exp' => 10,
+        // 刷新有效期
+        'ttl' => 86400
     ]
 ];
