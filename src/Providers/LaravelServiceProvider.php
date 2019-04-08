@@ -10,6 +10,8 @@ namespace LTools\Providers;
 
 
 use Illuminate\Support\ServiceProvider;
+use LTools\Auths\Cache\CacheGuard;
+use LTools\Auths\Cache\TokenHandle;
 use LTools\Sign\SignManager;
 
 class LaravelServiceProvider extends ServiceProvider
@@ -24,6 +26,9 @@ class LaravelServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $path = realpath(__DIR__.'/../../config/ltool.php');
+        $this->publishes([$path => config_path('ltools.php')], 'config');
+        $this->mergeConfigFrom($path, 'ltools');
     }
 
     /**
@@ -36,6 +41,8 @@ class LaravelServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerSign();
+
+        $this->extendAuthGuard();
     }
 
     /**
@@ -47,10 +54,30 @@ class LaravelServiceProvider extends ServiceProvider
     protected function registerSign()
     {
         $this->app->singleton(
-            'lTools.sign',
+            'ltools.sign',
             function ($app) {
                 return new SignManager($app['request']);
             }
         );
+    }
+
+    /**
+     * Extend Laravel's Auth.
+     *
+     * @return void
+     */
+    protected function extendAuthGuard()
+    {
+        $this->app['auth']->extend('ltools.token', function ($app, $name, array $config) {
+
+            $token = new TokenHandle($app['request'], $app['config']['ltools']['token-cache']);
+
+            $guard = new CacheGuard(
+                $app['auth']->createUserProvider($config['provider']),
+                $token
+            );
+            $app->refresh('request', $guard, 'setRequest');
+            return $guard;
+        });
     }
 }

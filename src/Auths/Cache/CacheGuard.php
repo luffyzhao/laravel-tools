@@ -6,15 +6,15 @@
  * Time: 21:42
  */
 
-namespace LTools\Auths\Signer;
+namespace LTools\Auths\Cache;
 
 
 use Illuminate\Auth\GuardHelpers;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
-use LTools\Contracts\Signer\SignerInterface;
 
-class SignerGuard implements Guard
+class CacheGuard implements Guard
 {
     use GuardHelpers;
     /**
@@ -26,7 +26,7 @@ class SignerGuard implements Guard
      * SignerGuard constructor.
      *
      * @param UserProvider $provider
-     * @param TokenHandle  $handle
+     * @param TokenHandle $handle
      */
     public function __construct(UserProvider $provider, TokenHandle $handle)
     {
@@ -38,15 +38,24 @@ class SignerGuard implements Guard
      * Get the currently authenticated user.
      *
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @throws \LTools\Exceptions\TokenException
      */
     public function user()
     {
+        if ($this->user !== null) {
+            return $this->user;
+        }
+
+        if ($token = $this->handle->check()) {
+            $this->user = $this->provider->retrieveById($token->getId());
+        }
+
         return $this->user;
     }
 
     /**
      * @param array $credentials
-     * @param bool  $login
+     * @param bool $login
      *
      * @return bool|string
      */
@@ -60,6 +69,27 @@ class SignerGuard implements Guard
         return false;
     }
 
+    /**
+     * logout
+     * @author luffyzhao@vip.126.com
+     * @return bool
+     * @throws \LTools\Exceptions\TokenException
+     */
+    public function logout(): bool
+    {
+        return $this->handle->delete();
+    }
+
+
+    /**
+     * refresh
+     * @author luffyzhao@vip.126.com
+     * @return mixed
+     * @throws \LTools\Exceptions\TokenException
+     */
+    public function refresh(){
+        return $this->handle->refresh();
+    }
 
     /**
      *
@@ -90,15 +120,14 @@ class SignerGuard implements Guard
     }
 
     /**
-     * @param SignerInterface $user
+     * @param Authenticatable $user
      *
      * @return bool|string
      */
-    public function login(SignerInterface $user)
+    public function login(Authenticatable $user)
     {
-        $token = $this->handle->fromUser($user);
+        $token = $this->handle->generate($user);
         $this->setUser($user);
-
         return $token;
     }
 }
