@@ -9,7 +9,9 @@
 namespace LTools\Exceptions;
 
 
-class TokenException extends \Exception
+use Illuminate\Auth\AuthenticationException;
+
+class TokenException extends AuthenticationException
 {
 
 }
