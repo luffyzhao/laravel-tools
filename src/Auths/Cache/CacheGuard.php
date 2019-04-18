@@ -13,6 +13,7 @@ use Illuminate\Auth\GuardHelpers;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
+use LTools\Exceptions\TokenException;
 
 class CacheGuard implements Guard
 {
@@ -38,7 +39,6 @@ class CacheGuard implements Guard
      * Get the currently authenticated user.
      *
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
-     * @throws \LTools\Exceptions\TokenException
      */
     public function user()
     {
@@ -46,9 +46,14 @@ class CacheGuard implements Guard
             return $this->user;
         }
 
-        if ($token = $this->handle->check()) {
-            $this->user = $this->provider->retrieveById($token->getId());
+        try{
+            if ($token = $this->handle->getToken()) {
+                $this->user = $this->provider->retrieveById($token->getId());
+            }
+        }catch (TokenException $exception){
+
         }
+
 
         return $this->user;
     }

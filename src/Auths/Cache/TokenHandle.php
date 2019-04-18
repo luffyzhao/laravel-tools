@@ -57,7 +57,26 @@ class TokenHandle
      * check
      * @author luffyzhao@vip.126.com
      */
-    public function check(): Token
+    public function check(): bool
+    {
+        $token = $this->parse();
+
+        if ($token !== null) {
+            $tokenArr = Crypt::decrypt($token);
+            if ($tokenArr instanceof Token && $this->validateInvalidToken($tokenArr)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * getToken
+     * @author luffyzhao@vip.126.com
+     * @return Token
+     * @throws TokenException
+     */
+    public function getToken() : Token
     {
         $token = $this->parse();
 
@@ -67,8 +86,7 @@ class TokenHandle
                 return $tokenArr;
             }
         }
-
-        throw new TokenException('token invalid');
+        throw new TokenException('invalid');
     }
 
     /**
@@ -84,7 +102,7 @@ class TokenHandle
     {
         $token = new Token($user->getAuthIdentifier());
 
-        Cache::set($this->config['key_prefix'] . $token->getId(), $token->getCode());
+        Cache::put($this->config['key_prefix'] . $token->getId(), $token->getCode(), $this->config['exp']);
 
         return $token;
     }
@@ -103,12 +121,12 @@ class TokenHandle
             if ($tokenArr instanceof Token && $this->validateRefreshToken($tokenArr)) {
                 $newToken = new Token($tokenArr->getId());
 
-                Cache::set($this->config['key_prefix'] . $newToken->getId(), $newToken->getCode());
+                Cache::put($this->config['key_prefix'] . $newToken->getId(), $newToken->getCode(), $this->config['exp']);
 
                 return $newToken;
             }
         }
-        throw new TokenException('token invalid');
+        throw new TokenException('invalid');
     }
 
     /**
@@ -119,7 +137,7 @@ class TokenHandle
      */
     public function delete()
     {
-        $token = $this->check();
+        $token = $this->getToken();
 
         Cache::forget($this->config['key_prefix'] . $token->getId());
 
@@ -152,11 +170,9 @@ class TokenHandle
      */
     protected function validateInvalidToken(Token $tokenArr): bool
     {
-//        dump($tokenArr->getTime() , $this->config['exp'] , time());
         if ($tokenArr->getTime() + $this->config['exp'] < time()) {
             return false;
         }
-
         return $this->validateToken($tokenArr);
     }
 

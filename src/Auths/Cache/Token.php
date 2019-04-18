@@ -84,4 +84,10 @@ class Token
     {
         return $this->time;
     }
+
+    /**
+     * __clone
+     * @author luffyzhao@vip.126.com
+     */
+    private function __clone(){}
 }
