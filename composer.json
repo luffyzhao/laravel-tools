@@ -34,6 +34,13 @@
             "email": "luffyzhao@vip.126.com"
         }
     ],
+	"extra": {
+        "laravel": {
+            "providers": [
+                "LTools\\LTools\\LaravelServiceProvider"
+            ]
+        }
+    },
     "repositories": {
         "packagist": {
             "type": "composer",
