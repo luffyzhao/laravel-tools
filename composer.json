@@ -37,7 +37,7 @@
 	"extra": {
         "laravel": {
             "providers": [
-                "LTools\\LTools\\LaravelServiceProvider"
+                "LTools\\Providers\\LaravelServiceProvider"
             ]
         }
     },
