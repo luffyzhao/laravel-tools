@@ -127,13 +127,14 @@ abstract class SearchAbstract implements SearchInterface
                     $default = $this->attributes->offsetGet($column);
                     $value = $this->getAttribute($column, $default);
 
-                    if (false !== $value) {
-                        $attributes[] = $this->validate(
-                            $column,
-                            $operator,
-                            $value
-                        );
+                    if (false === $value || is_null($value) || $value === '') {
+                        continue;
                     }
+                    $attributes[] = $this->validate(
+                        $column,
+                        $operator,
+                        $value
+                    );
                 }
             }
         }
