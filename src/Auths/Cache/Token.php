@@ -10,6 +10,7 @@ namespace LTools\Auths\Cache;
 
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class Token
 {
@@ -96,7 +97,7 @@ class Token
     /**
      * @return string
      */
-    public function getClass(): string
+    public function getClass(): ?string
     {
         return $this->class;
     }
