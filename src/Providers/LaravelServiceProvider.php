@@ -12,6 +12,8 @@ namespace LTools\Providers;
 use Illuminate\Support\ServiceProvider;
 use LTools\Auths\Cache\CacheGuard;
 use LTools\Auths\Cache\TokenHandle;
+use LTools\Console\Commands\Backup\Restore;
+use LTools\Console\Commands\Backup\Run;
 use LTools\Sign\SignManager;
 
 class LaravelServiceProvider extends ServiceProvider
@@ -43,6 +45,8 @@ class LaravelServiceProvider extends ServiceProvider
         $this->registerSign();
 
         $this->extendAuthGuard();
+
+        $this->registerCommand();
     }
 
     /**
@@ -79,5 +83,18 @@ class LaravelServiceProvider extends ServiceProvider
             $app->refresh('request', $guard, 'setRequest');
             return $guard;
         });
+    }
+
+    /**  */
+    protected function registerCommand(){
+        $this->app->singleton('luffyzhao.tools.backup.run', function ($app) {
+            return new Run();
+        });
+        $this->commands('luffyzhao.tools.backup.run');
+
+        $this->app->singleton('luffyzhao.tools.backup.restore', function ($app) {
+            return new Restore();
+        });
+        $this->commands('luffyzhao.tools.backup.restore');
     }
 }

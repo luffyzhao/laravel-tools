@@ -29,16 +29,24 @@ class Token
     protected $time;
 
     /**
-     * Token constructor.
-     * @param $authId
+     * @var string
      */
-    public function __construct($authId)
+    protected $class;
+
+
+    /**
+     * Token constructor.
+     * @param Authenticatable $user
+     */
+    public function __construct(Authenticatable $user)
     {
-        $this->id = $authId;
+        $this->id = $user->getAuthIdentifier();
 
         $this->code = $this->getRedisString();
 
         $this->time = time();
+
+        $this->class = get_class($user);
     }
 
     /**
@@ -83,6 +91,14 @@ class Token
     public function getTime(): int
     {
         return $this->time;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClass(): string
+    {
+        return $this->class;
     }
 
     /**

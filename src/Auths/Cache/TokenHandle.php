@@ -72,11 +72,11 @@ class TokenHandle
 
     /**
      * getToken
-     * @author luffyzhao@vip.126.com
      * @return Token
      * @throws TokenException
+     * @author luffyzhao@vip.126.com
      */
-    public function getToken() : Token
+    public function getToken(): Token
     {
         $token = $this->parse();
 
@@ -100,17 +100,17 @@ class TokenHandle
      */
     public function generate(Authenticatable $user): Token
     {
-        $token = new Token($user->getAuthIdentifier());
+        $token = new Token($user);
 
-        Cache::put($this->config['key_prefix'] . $token->getId(), $token->getCode(), $this->config['exp']);
+        Cache::put($this->config['key_prefix'] . $token->getClass() . $token->getId(), $token->getCode(), $this->config['exp']);
 
         return $token;
     }
 
     /**
      * refresh
-     * @author luffyzhao@vip.126.com
      * @throws TokenException
+     * @author luffyzhao@vip.126.com
      */
     public function refresh()
     {
@@ -121,7 +121,7 @@ class TokenHandle
             if ($tokenArr instanceof Token && $this->validateRefreshToken($tokenArr)) {
                 $newToken = new Token($tokenArr->getId());
 
-                Cache::put($this->config['key_prefix'] . $newToken->getId(), $newToken->getCode(), $this->config['exp']);
+                Cache::put($this->config['key_prefix'] . $newToken->getClass() . $newToken->getId(), $newToken->getCode(), $this->config['exp']);
 
                 return $newToken;
             }
@@ -131,15 +131,15 @@ class TokenHandle
 
     /**
      * delete
-     * @author luffyzhao@vip.126.com
      * @return bool
      * @throws TokenException
+     * @author luffyzhao@vip.126.com
      */
     public function delete()
     {
         $token = $this->getToken();
 
-        Cache::forget($this->config['key_prefix'] . $token->getId());
+        Cache::forget($this->config['key_prefix'] . $token->getClass() . $token->getId());
 
         return true;
     }
@@ -148,8 +148,8 @@ class TokenHandle
     /**
      * validateRefreshToken
      * @param Token $tokenArr
-     * @author luffyzhao@vip.126.com
      * @return bool
+     * @author luffyzhao@vip.126.com
      */
     protected function validateRefreshToken(Token $tokenArr): bool
     {
@@ -165,8 +165,8 @@ class TokenHandle
     /**
      * validateInvalidToken
      * @param $tokenArr
-     * @author luffyzhao@vip.126.com
      * @return bool
+     * @author luffyzhao@vip.126.com
      */
     protected function validateInvalidToken(Token $tokenArr): bool
     {
@@ -179,12 +179,12 @@ class TokenHandle
     /**
      * validateToken
      * @param Token $tokenArr
-     * @author luffyzhao@vip.126.com
      * @return bool
+     * @author luffyzhao@vip.126.com
      */
     protected function validateToken(Token $tokenArr): bool
     {
-        $code = Cache::get($this->config['key_prefix'] . $tokenArr->getId());
+        $code = Cache::get($this->config['key_prefix'] . $tokenArr->getClass() . $tokenArr->getId());
 
         return $code === $tokenArr->getCode();
     }
@@ -218,7 +218,7 @@ class TokenHandle
     protected function fromAltHeaders()
     {
         return $this->request->server->get('HTTP_AUTHORIZATION')
-            ?: $this->request->server->get(
+            ? $this->request->input('_token') : $this->request->server->get(
                 'REDIRECT_HTTP_AUTHORIZATION'
             );
     }
