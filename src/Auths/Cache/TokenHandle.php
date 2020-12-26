@@ -119,7 +119,7 @@ class TokenHandle
         if ($token !== null) {
             $tokenArr = Crypt::decrypt($token);
             if ($tokenArr instanceof Token && $this->validateRefreshToken($tokenArr)) {
-                $newToken = new Token($tokenArr->getId());
+                $newToken = new Token($tokenArr));
 
                 Cache::put($this->config['key_prefix'] . $newToken->getClass() . $newToken->getId(), $newToken->getCode(), $this->config['exp']);
 
