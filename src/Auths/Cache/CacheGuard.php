@@ -49,6 +49,9 @@ class CacheGuard implements Guard
         try{
             if ($token = $this->handle->getToken()) {
                 $this->user = $this->provider->retrieveById($token->getId());
+                if(get_class($this->user()) !== $token->getClass()){
+                    $this->user = null;
+                }
             }
         }catch (TokenException $exception){
 
