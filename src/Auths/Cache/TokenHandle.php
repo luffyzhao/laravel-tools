@@ -217,10 +217,7 @@ class TokenHandle
      */
     protected function fromAltHeaders()
     {
-        return $this->request->server->get('HTTP_AUTHORIZATION')
-            ? $this->request->input('_token') : $this->request->server->get(
-                'REDIRECT_HTTP_AUTHORIZATION'
-            );
+        return $this->request->input('_token');
     }
 
 }
