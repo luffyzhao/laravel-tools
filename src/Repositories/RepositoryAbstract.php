@@ -37,6 +37,24 @@ abstract class RepositoryAbstract
         return $this->model->findOrFail($id, $columns);
     }
 
+    /**
+     * 通过主键查找一个模型.
+     *
+     * @method find
+     *
+     * @param int|string $id 主键ID
+     * @param array $columns 获取字段
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     *
+     * @author luffyzhao@vip.126.com
+     */
+    public function lock($id, array $columns = ['*'])
+    {
+        return $this->model->lockForUpdate()->findOrFail($id, $columns);
+    }
 
     /**
      * 获取全部模型.
@@ -77,6 +95,7 @@ abstract class RepositoryAbstract
         $pageName = 'page',
         int $page = null
     ) {
+        $perPage = request()->has('per_page') ? request()->input('per_page') : $perPage;
         return $this->model->where(
             $attributes
         )->paginate($perPage, $columns, $pageName, $page);
