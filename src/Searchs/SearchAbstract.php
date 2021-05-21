@@ -224,7 +224,9 @@ abstract class SearchAbstract implements SearchInterface
                     $query->whereRaw($value);
                     break;
                 case 'between':
-                    $query->whereBetween($column, $value);
+                    if(count($value) === 2 && !empty($value[0]) && !empty($value[1])){
+                        $query->whereBetween($column, $value);
+                    }
                     break;
             }
         };
