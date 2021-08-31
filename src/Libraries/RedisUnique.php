@@ -61,6 +61,6 @@ class RedisUnique
         if ($strLen > $length) {
             throw new Exception(sprintf('长度不够生成唯一主健'));
         }
-        return $key . str_pad(strtoupper($incr), $length - $strLen, '0', STR_PAD_LEFT);
+        return $key . str_pad(strtoupper($incr), $length - mb_strlen($key), '0', STR_PAD_LEFT);
     }
 }
