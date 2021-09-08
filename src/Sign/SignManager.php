@@ -73,7 +73,7 @@ class SignManager
         }
 
         // sign 和 sign_type 必须
-        if (!isset($data['sign']) || isset($data['sign_type'])) {
+        if (!isset($data['sign']) || !isset($data['sign_type'])) {
             return false;
         }
 
@@ -99,7 +99,7 @@ class SignManager
         return !empty($timestamp)
             && Carbon::createFromTimestamp($timestamp)->diffInRealSeconds()
             <= (int)Config::get(
-                'ltool.sign.time_out',
+                'ltools.sign.time_out',
                 60
             );
     }
