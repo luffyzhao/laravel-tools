@@ -47,7 +47,7 @@ class SignManager
      */
     public function sign(array $data, $signType = 'md5'): array
     {
-        $data = collect($data)->put('timestamp', Carbon::now()->timezone)
+        $data = collect($data)->put('timestamp', Carbon::now()->timestamp)
             ->forget(['sign', 'sign_type'])->toArray();
 
         $data['sign'] = $this->signDriver($signType)->sign($data);
