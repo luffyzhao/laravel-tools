@@ -15,6 +15,12 @@ use LTools\Sign\SignAbstract;
 
 class Md5 extends SignAbstract implements SignDriverInterface
 {
+    private $signKey;
+
+    public function __construct($signKey)
+    {
+        $this->signKey = $signKey;
+    }
 
     /**
      * 签名.
@@ -58,6 +64,7 @@ class Md5 extends SignAbstract implements SignDriverInterface
 
     private function getSignKey(): string
     {
-        return Config::get('ltool.sign.sign_key', '');
+        return $this->signKey;
     }
+
 }

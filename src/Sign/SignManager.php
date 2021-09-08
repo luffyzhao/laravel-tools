@@ -19,6 +19,11 @@ use LTools\Sign\Drivers\Rsa;
 class SignManager
 {
     /**
+     * @var
+     * @author luffyzhao@vip.126.com
+     */
+    private $signKey;
+    /**
      * @var Request
      */
     private $request;
@@ -34,13 +39,13 @@ class SignManager
     }
 
     /**
-     * @param array  $data
+     * @param array $data
      * @param string $signType
      *
      * @return array
      * @throws SignException
      */
-    public function sign(array $data, $signType = 'rsa'): array
+    public function sign(array $data, $signType = 'md5'): array
     {
         $data = collect($data)->put('timestamp', Carbon::now()->timezone)
             ->forget(['sign', 'sign_type'])->toArray();
@@ -63,7 +68,7 @@ class SignManager
     public function validate(array $data)
     {
         // 时间验证
-        if(!(isset($data['timestamp']) && $this->validateTimestamp($data['timestamp']))){
+        if (!(isset($data['timestamp']) && $this->validateTimestamp($data['timestamp']))) {
             return false;
         }
 
@@ -116,15 +121,33 @@ class SignManager
     {
         switch (strtoupper($signType)) {
             case 'MD5':
-                $signObj = new Md5();
+                $signObj = new Md5($this->signKey);
                 break;
-            case 'RSA':
-                $signObj = new Rsa();
                 break;
             default:
                 throw new SignException('sign type must be filled in');
         }
 
         return $signObj;
+    }
+
+    /**
+     * @return mixed
+     * @author luffyzhao@vip.126.com
+     */
+    public function getSignKey()
+    {
+        return $this->signKey;
+    }
+
+    /**
+     * @param mixed $signKey
+     * @return SignManager
+     * @author luffyzhao@vip.126.com
+     */
+    public function setSignKey($signKey): self
+    {
+        $this->signKey = $signKey;
+        return $this;
     }
 }

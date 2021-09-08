@@ -12,6 +12,12 @@ namespace LTools\Contracts\Sign;
 interface SignDriverInterface
 {
     /**
+     * SignDriverInterface constructor.
+     * @param $signKey
+     * @author luffyzhao@vip.126.com
+     */
+    public function __construct($signKey);
+    /**
      * 签名.
      *
      * @method sign
@@ -37,5 +43,5 @@ interface SignDriverInterface
      * @author luffyzhao@vip.126.com
      */
     public function verify(array $data, string $sign): bool;
-    
+
 }
