@@ -115,11 +115,14 @@ class TokenHandle
     public function refresh()
     {
         $token = $this->parse();
-
         if ($token !== null) {
             $tokenArr = Crypt::decrypt($token);
             if ($tokenArr instanceof Token && $this->validateRefreshToken($tokenArr)) {
-                $newToken = new Token($tokenArr);
+                /** @var Authenticatable $user */
+                $class = $tokenArr->getClass();
+                $user = new $class();
+
+                $newToken = new Token($user->find($tokenArr->getId()));
 
                 Cache::put($this->config['key_prefix'] . $newToken->getClass() . $newToken->getId(), $newToken->getCode(), $this->config['exp']);
 
@@ -153,13 +156,7 @@ class TokenHandle
      */
     protected function validateRefreshToken(Token $tokenArr): bool
     {
-
-        if ($tokenArr->getTime() + $this->config['ttl'] < time()) {
-            return false;
-        }
-
-        return $this->validateToken($tokenArr);
-
+        return $tokenArr->getTime() + $this->config['ttl'] > time();
     }
 
     /**
@@ -185,7 +182,6 @@ class TokenHandle
     protected function validateToken(Token $tokenArr): bool
     {
         $code = Cache::get($this->config['key_prefix'] . $tokenArr->getClass() . $tokenArr->getId());
-
         return $code === $tokenArr->getCode();
     }
 
