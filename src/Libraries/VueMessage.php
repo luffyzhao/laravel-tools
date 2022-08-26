@@ -1,5 +1,6 @@
 <?php
 
+namespace LTools\Libraries;
 use Illuminate\Support\Collection;
 use JsonSerializable;
 
