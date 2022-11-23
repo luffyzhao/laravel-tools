@@ -204,7 +204,9 @@ abstract class RepositoryAbstract
         $response = [];
         if (!empty($idArr)) {
             foreach ($idArr as $id) {
-                $response[] = DB::transaction($callback($id));
+                $response[] = DB::transaction(function ()use ($id, $callback){
+                    return $callback($id);
+                });
             }
         }
         return $response;
