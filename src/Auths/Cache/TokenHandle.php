@@ -102,8 +102,6 @@ class TokenHandle
     {
         $token = new Token($user);
 
-        Cache::put($this->config['key_prefix'] . $token->getClass() . $token->getId(), $token->getCode(), $this->config['exp']);
-
         return $token;
     }
 
@@ -124,8 +122,6 @@ class TokenHandle
 
                 $newToken = new Token($user->find($tokenArr->getId()));
 
-                Cache::put($this->config['key_prefix'] . $newToken->getClass() . $newToken->getId(), $newToken->getCode(), $this->config['exp']);
-
                 return $newToken;
             }
         }
@@ -135,15 +131,10 @@ class TokenHandle
     /**
      * delete
      * @return bool
-     * @throws TokenException
      * @author luffyzhao@vip.126.com
      */
     public function delete()
     {
-        $token = $this->getToken();
-
-        Cache::forget($this->config['key_prefix'] . $token->getClass() . $token->getId());
-
         return true;
     }
 
@@ -161,7 +152,7 @@ class TokenHandle
 
     /**
      * validateInvalidToken
-     * @param $tokenArr
+     * @param Token $tokenArr
      * @return bool
      * @author luffyzhao@vip.126.com
      */
@@ -181,8 +172,7 @@ class TokenHandle
      */
     protected function validateToken(Token $tokenArr): bool
     {
-        $code = Cache::get($this->config['key_prefix'] . $tokenArr->getClass() . $tokenArr->getId());
-        return $code === $tokenArr->getCode();
+        return true;
     }
 
     /**
