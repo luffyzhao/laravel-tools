@@ -10,12 +10,6 @@
     "illuminate/console": ">=5.0",
     "illuminate/database": ">=5.0",
     "illuminate/routing": ">=5.0",
-    "mockery/mockery": ">=0.9.9",
-    "lcobucci/jwt": "^3.2",
-    "namshi/jose": "^7.0",
-    "nesbot/carbon": ">=1.0",
-    "maatwebsite/excel": "3.*",
-    "vladimir-yuldashev/laravel-queue-rabbitmq": "^v10.2",
     "ext-openssl": "*",
     "ext-json": "*",
     "ext-mbstring": "*"
