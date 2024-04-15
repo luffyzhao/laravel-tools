@@ -97,7 +97,7 @@ abstract class RepositoryAbstract
         int   $page = null
     )
     {
-        $perPage = request()->has('per_page') ? request()->input('per_page') : $perPage;
+        $perPage = request()->has('page-size') ? request()->input('page-size') : $perPage;
         return $this->model->where(
             $attributes
         )->paginate($perPage, $columns, $pageName, $page);
@@ -127,6 +127,7 @@ abstract class RepositoryAbstract
               $page = null
     )
     {
+        $perPage = request()->has('page-size') ? request()->input('page-size') : $perPage;
         return $this->model
             ->where($attributes)->simplePaginate($perPage, $columns, $pageName, $page);
     }
