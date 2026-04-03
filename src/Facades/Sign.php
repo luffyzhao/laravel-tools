@@ -29,6 +29,6 @@ class Sign extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'LTools.sign';
+        return 'ltools.sign';
     }
 }

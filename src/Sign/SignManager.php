@@ -97,7 +97,7 @@ class SignManager
     private function validateTimestamp(int $timestamp)
     {
         return !empty($timestamp)
-            && Carbon::createFromTimestamp($timestamp)->diffInRealSeconds()
+            && abs(Carbon::createFromTimestamp($timestamp)->diffInSeconds())
             <= (int)Config::get(
                 'ltools.sign.time_out',
                 60
@@ -121,8 +121,7 @@ class SignManager
     {
         switch (strtoupper($signType)) {
             case 'MD5':
-                $signObj = new Md5($this->signKey);
-                break;
+                $signObj = new Md5($this->signKey ?? Config::get('ltools.sign.sign_key'));
                 break;
             default:
                 throw new SignException('sign type must be filled in');

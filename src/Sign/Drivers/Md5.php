@@ -37,7 +37,7 @@ class Md5 extends SignAbstract implements SignDriverInterface
     {
         // 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
         return md5(
-            $this->createLinkstring($this->sortKeys($data)).$this->getSignKey()
+            $this->createLinkString($this->sortKeys($data)).$this->getSignKey()
         );
     }
 
@@ -56,7 +56,7 @@ class Md5 extends SignAbstract implements SignDriverInterface
     public function verify(array $data, string $sign): bool
     {
         $strSign = md5(
-            $this->createLinkstring($this->sortKeys($data)).$this->getSignKey()
+            $this->createLinkString($this->sortKeys($data)).$this->getSignKey()
         );
 
         return $strSign == $sign;
