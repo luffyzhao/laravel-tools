@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 class QueryExecutedListener
 {
     public function handle(QueryExecuted $queryExecuted){
-        Log::info($this->sqlBindings($queryExecuted));
+        Log::debug($this->sqlBindings($queryExecuted));
     }
     /**
      * 解析sql
